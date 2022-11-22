@@ -3,22 +3,20 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import tw from "twin.macro";
 import { GlobalFilter } from "../components/globalFilter";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  makeStyles,
-  Avatar,
-  Grid,
-  Typography,
-  TablePagination,
-  TableFooter,
-  Button,
-} from "@material-ui/core";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import makeStyles from '@mui/material/makeStyles';
+import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TablePagination from '@mui/material/TablePagination';
+import TableFooter from '@mui/material/TableFooter';
+import Button from '@mui/material/Button';
 
 const useStyles = makeStyles((theme) => ({
   table: {

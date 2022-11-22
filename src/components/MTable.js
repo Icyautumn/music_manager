@@ -1,20 +1,18 @@
 import faker from "faker";
 import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  makeStyles,
-  Avatar,
-  Grid,
-  Typography,
-  TablePagination,
-  TableFooter
-} from "@material-ui/core";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import makeStyles from '@mui/material/makeStyles';
+import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TablePagination from '@mui/material/TablePagination';
+import TableFooter from '@mui/material/TableFooter';
 
 let USERS = [],
   STATUSES = ["Active", "Pending", "Blocked"];
