@@ -3,6 +3,8 @@
     display: flex;
     justify-content: start;
     align-items: center;
+    background-color: #1a83ff;
+    margin: -10px -10px 0 -10px;
   }
   
   .menu-bars {
