@@ -10,6 +10,7 @@ import {
 import Home from "./pages/Home";
 import Student from "./pages/Student";
 import Teacher from "./pages/Teacher";
+import Invoice from "./pages/invoice/Invoice";
 import tw from "twin.macro";
 
 const AppContainer = tw.div`
@@ -46,6 +47,7 @@ function App() {
           />
           <Route path="/teachers" element={[<Navbar />, <AppContainer><Teacher /></AppContainer>]} />
           <Route path="/products" element={[<Navbar />, <Student />]} />
+          <Route path="/invoice" element={[<Navbar />, <Invoice />]} />
         </Routes>
       </>
     </Router>
