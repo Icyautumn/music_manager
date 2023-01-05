@@ -1,11 +1,30 @@
-body{
-    background: #f1f1f1;
+.delete-button {
+    display: none;
+  }
+  
+tr:hover .delete-button {
+    display: inline-block;
 }
 
-.footer li {
-    margin: 0.5rem 0.2rem;
+.t-head{
+    font-size: 14px;
+    text-align: start;
+    background-color: #666666;
 }
 
-button {
-    user-select: none;
+.desc{
+    box-shadow: none;
+    border-radius: 3px;
+    font-size: 14px;
 }
+  
+.Desc-text{
+    font-size: 14px;
+    text-decoration: none solid rgb(34, 34, 34);
+    white-space: pre-wrap;
+    background-color: #FDF4DB;
+    background: 0% 0%;
+    transition: background-color 1000ms ease-in-out, border-color 2000ms ease-in-out;
+
+}
+

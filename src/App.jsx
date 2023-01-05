@@ -3,7 +3,6 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Routes,
 } from "react-router-dom";
@@ -11,6 +10,7 @@ import Home from "./pages/Home";
 import Student from "./pages/Student";
 import Teacher from "./pages/Teacher";
 import Invoice from "./pages/invoice/Invoice";
+import InvoiceGenerator from "./pages/invoice/InvoiceTest"
 import tw from "twin.macro";
 
 const AppContainer = tw.div`
@@ -26,10 +26,6 @@ const AppContainer = tw.div`
   pr-0
 `;
 
-const Title = tw.h1`
-  text-2xl
-  font-semibold
-`;
 
 function App() {
   return (
@@ -47,7 +43,8 @@ function App() {
           />
           <Route path="/teachers" element={[<Navbar />, <AppContainer><Teacher /></AppContainer>]} />
           <Route path="/products" element={[<Navbar />, <Student />]} />
-          <Route path="/invoice" element={[<Navbar />, <Invoice />]} />
+          <Route path="/invoice" element={[<Navbar />, <InvoiceGenerator />]} />
+          {/* <Route path="/save_file" element={[<Navbar />, <Test_invoice />]} /> */}
         </Routes>
       </>
     </Router>
