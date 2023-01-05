@@ -12,7 +12,6 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import jsPDF from 'jspdf'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -126,7 +125,7 @@ function InvoiceGenerator() {
 
   // Function to save the invoice as a PDF
   const savePDF = () => {
-    const pdf = new jsPDF();
+    // const pdf = new jsPDF();
 
     // pdf.addHTML(document.main, ()=> {
     //   pdf.save('invoice.pdf');
