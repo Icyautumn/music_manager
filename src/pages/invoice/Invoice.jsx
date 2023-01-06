@@ -1,33 +1,26 @@
 import React, { useState } from "react";
+import StyledTextField from "./components/StyledTextField";
 import "./Invoice.css";
-import { v4 as uuidv4 } from "uuid";
 // import Table from "./components/Table";
-import Box from "@mui/material/Box";
-import { Grid } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Button from "@mui/material/Button";
+import { Grid } from "@mui/material";
+import Box from "@mui/material/Box";
+import InputAdornment from "@mui/material/InputAdornment";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { AiOutlinePlusCircle, AiFillDelete } from "react-icons/ai";
-import Button from "@mui/material/Button";
-import { data } from "autoprefixer";
-import { type } from "@testing-library/user-event/dist/type";
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import { useEffect } from "react";
-
-import DropZone from "./components/DropZone";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AiFillDelete, AiOutlinePlusCircle } from "react-icons/ai";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,24 +55,43 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiTextField-root": { mb: 1, width: "10ch", height: "6ch" },
   },
+  TableRow: {
+    "&:hover": {
+      backgroundColor: theme.palette.primary.gray,
+      color: "black",
+      "& $deleteButton": {
+        color: "black",
+        display: "block",
+      },
+    },
+  },
+  deleteButton: {
+    color: "white",
+    display: "block",
+  },
 }));
 
 function Invoice() {
   const [showInvoice, setShowInvoice] = useState(false);
   const [hover, sethover] = useState(false);
-  
+  const [Notes, setNotes] = useState("");
+
+  const [invoiceDate, setInvoiceDate] = React.useState(null);
+  const [dueDateInvoice, setDueDateInvoice] = useState("");
+
+  const [uuid, setUUID] = useState("");
+  const [admin_name, setAdmin_name] = useState("");
+  const [counter, setCounter] = useState(2);
 
   const handlePrint = () => {
     window.print();
   };
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "left",
-    color: theme.palette.text.secondary,
-  }));
+  // const Item = styled(Paper)(({ theme }) => ({
+  //   padding: theme.spacing(1),
+  //   textAlign: "left",
+  //   color: theme.palette.text.secondary,
+  // }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -91,23 +103,7 @@ function Invoice() {
     },
   }));
 
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      // backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
-
-  const [Notes, setNotes] = useState("");
-
-  const [invoiceDate, setInvoiceDate] = React.useState(null);
-  const [dueDateInvoice, setDueDateInvoice] = useState("");
   const [data, setData] = useState([]);
-  const [uuid, setUUID] = useState("");
-  const [counter, setCounter] = useState(2);
 
   const addItem = () => {
     const createData = {
@@ -127,7 +123,6 @@ function Invoice() {
     } else if (type === "amount") {
       updateItem.amount = value;
     } else {
-      console.log("flow");
       updateItem.Date = value;
       setData([...data]);
     }
@@ -138,12 +133,10 @@ function Invoice() {
   }
 
   // useEffect(() => {
-  //   sethover(false);
-  //   addTemplate();
   //   addItem();
   //   const newUUID = uuidv4();
   //   setUUID(newUUID);
-    
+
   // }, []);
 
   const deleteItem = (id) => {
@@ -161,101 +154,48 @@ function Invoice() {
         <Box component="form" noValidate autoComplete="off">
           <Grid container spacing={2} mb={2}>
             <Grid item xs={6}>
-              <Item elevation={0}>
-                <DropZone />
-
-                <TextField
-                  fullWidth
-                  required
-                  id="admin_name"
-                  label="admin name"
-                  variant="filled"
-                  size="small"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-                <TextField
-                  fullWidth
-                  required
+              <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                <StyledTextField id="admin_name" label="admin name" />
+                <StyledTextField
                   id="company_address"
                   label="Company's Address"
-                  variant="filled"
-                  size="small"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
                 />
-                <TextField
-                  fullWidth
-                  required
-                  id="zipcode"
-                  label="City, State Zip"
-                  variant="filled"
-                  size="small"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-              </Item>
+                <StyledTextField id="zipcode" label="City, State Zip" />
+              </div>
             </Grid>
             <Grid item xs={6}>
-              <Item sx={{ textAlign: "center" }} elevation={0}>
+              <div sx={{ textAlign: "center" }} elevation={0}>
                 <Typography variant="h2" gutterBottom>
                   INVOICE
                 </Typography>
-              </Item>
+              </div>
             </Grid>
           </Grid>
 
-          <Grid container spacing={2}>
+          <Grid container spacing={2} mb={1}>
             <Grid item xs={6}>
-              <Item elevation={0}>
+              <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
                 <Typography sx={{ textAlign: "left" }}>
                   <b>Bill To:</b>
                 </Typography>
-                <TextField
-                  fullWidth
-                  required
-                  size="small"
-                  id="client_name"
-                  label="Client's Name"
-                  variant="filled"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-                <TextField
-                  fullWidth
-                  required
-                  size="small"
-                  id="client_address"
-                  label="client's Address"
-                  variant="filled"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-                <TextField
-                  fullWidth
-                  required
-                  size="small"
-                  id="client_zipcode"
-                  label="client's Zipcode"
-                  variant="filled"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-              </Item>
+                <StyledTextField id="client_name" label="Client's Name" />
+                <StyledTextField id="client_address" label="client's Address" />
+                <StyledTextField id="client_zipcode" label="client's Zipcode" />
+              </div>
             </Grid>
             <Grid item xs={6}>
-              <Item elevation={0}>
+              <div>
                 <TextField
-                  fullWidth
-                  required
-                  size="small"
                   id="Invoice#"
                   label="Invoice #"
-                  variant="filled"
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
                   value={uuid}
                   disabled
+                  fullWidth
+                  required
+                  variant="filled"
+                  size="small"
+                  className={classes.root}
+                  InputProps={{ disableUnderline: true }}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -295,7 +235,7 @@ function Invoice() {
                     )}
                   />
                 </LocalizationProvider>
-              </Item>
+              </div>
             </Grid>
           </Grid>
 
@@ -313,12 +253,8 @@ function Invoice() {
               </TableHead>
               <TableBody>
                 {data.map((row) => (
-                  <StyledTableRow
-                    key={row.id}
-                    onMouseEnter={() => sethover(true)}
-                    onMouseLeave={() => sethover(false)}
-                  >
-                    <StyledTableCell component="th" scope="row">
+                  <TableRow key={row.id} className={classes.TableRow}>
+                    <TableCell component="th" scope="row">
                       <TextField
                         fullWidth
                         required
@@ -333,8 +269,8 @@ function Invoice() {
                           updateItem(newValue.target.value, row.id, "Desc")
                         }
                       />
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
+                    </TableCell>
+                    <TableCell align="left">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           label="Invoice Date"
@@ -353,8 +289,8 @@ function Invoice() {
                           )}
                         />
                       </LocalizationProvider>
-                    </StyledTableCell>
-                    <StyledTableCell width={"100%"} align="left">
+                    </TableCell>
+                    <TableCell width={"100%"} align="left">
                       <TextField
                         required
                         variant="filled"
@@ -373,8 +309,8 @@ function Invoice() {
                           ),
                           disableUnderline: true,
 
-                          textAlign: "center",
-                          inputmode: "numeric",
+                          textalign: "center",
+                          inputMode: "numeric",
                           pattern: "[0-9]*",
                         }}
                         size="small"
@@ -382,24 +318,22 @@ function Invoice() {
                           updateItem(newValue.target.value, row.id, "amount")
                         }
                       />
-                    </StyledTableCell>
-                    <StyledTableCell>
+                    </TableCell>
+                    <TableCell>
                       <AiFillDelete
                         size={15}
-                        style={{ color: hover ? "black" : "white" }}
+                        className={classes.deleteButton}
                         onClick={() => deleteItem(row.id)}
-                      />
-                    </StyledTableCell>
-                  </StyledTableRow>
+                      ></AiFillDelete>
+                    </TableCell>
+                  </TableRow>
                 ))}
                 <Grid>
                   <Box container sx={{ my: 1 }}>
-                    <Button
-                      variant="text"
-                      sx={{ "&:hover": { backgroundColor: "transparent" } }}
-                    >
-                      <AiOutlinePlusCircle size={25} onClick={addItem} />
+                    <Button>
+                    <AiOutlinePlusCircle size={25} onClick={addItem} />
                     </Button>
+                    
                     <p
                       style={{
                         marginTop: "5px",
@@ -417,32 +351,28 @@ function Invoice() {
                   <TableCell colSpan={1}>total</TableCell>
                   <TableCell align="right">${total}</TableCell>
                 </TableRow>
-                <TableRow></TableRow>
               </TableBody>
             </Table>
           </TableContainer>
 
-          <Grid container spacing={2} mb={2}>
-            <Grid Item xs={12}>
-              <Item elevation={0}>
-                <input
+          <Grid container spacing={2} mb={2} mt={2}>
+            <Grid item xs={12}>
+              <div elevation={0}>
+                <TextField
                   fullWidth
-                  required
                   id="Notes"
                   label="Notes"
                   variant="filled"
                   size="small"
                   multiline
-                  value={Notes}
                   maxRows={4}
                   className={classes.root}
                   InputProps={{ disableUnderline: true }}
-                  onChange={event => setNotes(event.target.value)}
-                  autoFocus
                 />
+              </div>
+              <div elevation={0}>
                 <TextField
                   fullWidth
-                  required
                   id="Terms"
                   label="Terms & Condition"
                   variant="filled"
@@ -452,7 +382,7 @@ function Invoice() {
                   className={classes.root}
                   InputProps={{ disableUnderline: true }}
                 />
-              </Item>
+              </div>
             </Grid>
           </Grid>
         </Box>

@@ -24,7 +24,7 @@ export const SidebarData = [
   },
   {
     title: 'save file',
-    path: '/save_file',
+    path: '/invoice_edit',
     icon: <IoIcons.IoMdPeople />,
     cName: 'nav-text'
   },

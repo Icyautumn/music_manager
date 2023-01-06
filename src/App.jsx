@@ -44,6 +44,7 @@ function App() {
           <Route path="/teachers" element={[<Navbar />, <AppContainer><Teacher /></AppContainer>]} />
           <Route path="/products" element={[<Navbar />, <Student />]} />
           <Route path="/invoice" element={[<Navbar />, <InvoiceGenerator />]} />
+          <Route path="/invoice_edit" element={[<Navbar />, <Invoice />]} />
           {/* <Route path="/save_file" element={[<Navbar />, <Test_invoice />]} /> */}
         </Routes>
       </>
