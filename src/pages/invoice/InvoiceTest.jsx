@@ -35,6 +35,14 @@ export const theme = createTheme({
 
 const useStyles = makeStyles((theme) =>
   createStyles({
+    box:{
+      "&:hover": {
+        "& $deleteButton": {
+          backgroundColor: theme.palette.error.dark,
+          color: "black",
+        },
+      },
+    },
     TableRow: {
       "&:hover": {
         backgroundColor: theme.palette.primary.gray,

@@ -20,6 +20,7 @@ export default function StyledTableContainer({
   tableRowStyle,
   tableStyle,
   deleteButton,
+  addItemButtonStyle
 }) {
   const [data, setData] = useState([]);
 
@@ -28,7 +29,7 @@ export default function StyledTableContainer({
       ...data,
       {
         Desc: "Description",
-        Date: "",
+        Date: new Date(),
         amount: 0,
       },
     ]);
@@ -46,8 +47,6 @@ export default function StyledTableContainer({
     newData.splice(index, 1);
     setData(newData);
   };
-
-  const total = data.reduce((acc, item) => acc + parseInt(item.amount), 0);
   const updateItem = (value, id, type) => {
     const newData = [...data];
     newData[id][type] = value;
@@ -87,7 +86,7 @@ export default function StyledTableContainer({
                   className={tableStyle}
                   InputProps={{ disableUnderline: true }}
                   size="small"
-                  onChange={(event) =>
+                  onBlur={(event) =>
                     updateItem(event.target.value, index, "Desc")
                   }
                 />
@@ -98,13 +97,18 @@ export default function StyledTableContainer({
                     label="Invoice Date"
                     value={row.Date}
                     onChange={(event) => {
-                      updateItem(event.target.value, index, "Date");
+                      updateItem(event, index, "Date");
                     }}
                     renderInput={(params) => (
                       <TextField
                         variant="filled"
                         size="small"
                         className={tableStyle}
+                        sx={{
+                          input: { backgroundColor: "white" },
+                          label: { backgroundColor: "white" },
+
+                        }}
                         InputProps={{ disableUnderline: true }}
                         {...params}
                       />
@@ -136,7 +140,7 @@ export default function StyledTableContainer({
                     pattern: "[0-9]*",
                   }}
                   size="small"
-                  onChange={(event) =>
+                  onBlur={(event) =>
                     updateItem(event.target.value, index, "amount")
                   }
                 />
@@ -151,12 +155,12 @@ export default function StyledTableContainer({
             </TableRow>
           ))}
           <Grid>
-            <Box container sx={{ my: 1 }}>
-              <Button>
-                <AiOutlinePlusCircle size={25} onClick={addItem} />
+            <Box container sx={{ my: 1 }} className={addItemButtonStyle}>
+              <Button >
+                <AiOutlinePlusCircle className={deleteButton} size={25} onClick={addItem} />
               </Button>
 
-              <p
+              <p className={deleteButton}
                 style={{
                   marginTop: "5px",
                   display: "inline",

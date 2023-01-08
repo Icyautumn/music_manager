@@ -14,6 +14,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 const useStyles = makeStyles((theme) => ({
+  addButton:{
+    "&:hover": {
+      "& $Button": {
+        backgroundColor: theme.palette.error.dark,
+        color: "black",
+      },
+    },
+  },
   root: {
     "& .MuiFilledInput-root": {
       backgroundColor: "rgb(255,255,255)",
@@ -76,12 +84,6 @@ function Invoice() {
   const handlePrint = () => {
     window.print();
   };
-
-  // const Item = styled(Paper)(({ theme }) => ({
-  //   padding: theme.spacing(1),
-  //   textAlign: "left",
-  //   color: theme.palette.text.secondary,
-  // }));
 
   function handleChange(event) {
     setNotes(event.target.value);
@@ -163,12 +165,14 @@ function Invoice() {
                   variant="filled"
                   size="small"
                   className={classes.root}
+                 
                   InputProps={{ disableUnderline: true }}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Invoice Date"
                     value={invoiceDate}
+                    sx={{ backgroundColor: 'white' }}
                     onChange={(newValue) => {
                       setInvoiceDate(newValue);
                     }}
@@ -178,6 +182,11 @@ function Invoice() {
                         size="small"
                         variant="filled"
                         className={classes.root}
+                        sx={{
+                          input: { backgroundColor: "white" },
+                          label: { backgroundColor: "white" },
+
+                        }}
                         InputProps={{ disableUnderline: true }}
                         {...params}
                       />
@@ -197,6 +206,11 @@ function Invoice() {
                         size="small"
                         variant="filled"
                         className={classes.root}
+                        sx={{
+                          input: { backgroundColor: "white" },
+                          label: { backgroundColor: "white" },
+
+                        }}
                         InputProps={{ disableUnderline: true }}
                         {...params}
                       />
@@ -210,6 +224,7 @@ function Invoice() {
             tableRowStyle={classes.TableRow}
             tableStyle={classes.table}
             deleteButton={classes.deleteButton}
+            addItemButtonStyle={classes.addButton}
           />
 
           <Grid container spacing={2} mb={2} mt={2}>

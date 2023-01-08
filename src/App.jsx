@@ -12,6 +12,7 @@ import Teacher from "./pages/Teacher";
 import Invoice from "./pages/invoice/Invoice";
 import InvoiceGenerator from "./pages/invoice/InvoiceTest"
 import tw from "twin.macro";
+import Login_page from "./pages/login Page/Login_page";
 
 const AppContainer = tw.div`
   w-full
@@ -45,6 +46,7 @@ function App() {
           <Route path="/products" element={[<Navbar />, <Student />]} />
           <Route path="/invoice" element={[<Navbar />, <InvoiceGenerator />]} />
           <Route path="/invoice_edit" element={[<Navbar />, <Invoice />]} />
+          <Route path="/login" element={[<Navbar />, <Login_page />]} />
           {/* <Route path="/save_file" element={[<Navbar />, <Test_invoice />]} /> */}
         </Routes>
       </>
