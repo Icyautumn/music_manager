@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import "./login_page.css";
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 import axios from "axios";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   pt: 2,
   px: 4,
@@ -19,9 +19,6 @@ const style = {
 };
 
 function Login_page() {
-
-  
-
   const [SignUp, SetSignup] = useState(false);
 
   const handleClick = (e) => {
@@ -36,14 +33,63 @@ function Login_page() {
     setOpen(false);
   };
 
-  const NewSignUp = (e) => {
-    // get the details and send to lambda to sign user up
-  }
-
   const [createName, setCreateName] = useState("");
   const [createEmail, setCreateEmail] = useState("");
   const [createPassword, setCreatePassword] = useState("");
   const [createContact, setCreateContact] = useState("");
+
+  const token =
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjQ5MDI4LCJleHAiOjE2NzMzMzU0MjgsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.BgOGdnk6_zdj4W3BCyMbeFVchdBU4ZbAr6i6xje-vcX3CPq0bG8O_U4CTUNHD6ijSxUXTLrD07pQScibRhiYC_MbS758WH4kDIslCF2r4P3vQ5PZhfI9E3ldV_rjIWhxXQP7LkbobRwopfdX5hnJDLZUzDa6YuSj1xkhr2jM9ZSRMiv2Zo1O694SAKEI5paD2rrfvo9eu5XKe8_LGzgymsJb_r_GUiC7tcyxNAR_8ZrhWErLiZEX3IKjo0SOfVZOcG3mXgibvtl65LEMhBRzwWU9z_c-mhteXEX3nWRAKGHdgKnf6q3uavn3oI9rh8P9ff_HDaUFYlim9szcjoi4FA";
+  const paramss = {
+    routeKey: "POST /music_portal/account/reg-user",
+    parameters: {
+      email: { createEmail },
+      password: { createPassword },
+      name: { createName },
+      contact: { createContact },
+    },
+  };
+
+  const headerss = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      // "Access-Control-Allow-Origin": "*",
+      // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      // "Access-Control-Allow-Credentials": true,
+    },
+  };
+  axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+  // const NewSignUp = async () => {
+  //   const response = await axios
+  //     .post(
+  //       "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
+
+  //       paramss,
+  //       { headerss }
+  //     )
+  //     // .catch((err) => console.log(err));
+  //     .catch((err) => console.log(err));
+
+  //   if (response) {
+  //     const receiver = response.data;
+  //     console.log(receiver);
+  //   }
+  // };
+
+  const NewSignUp = async () => {
+    const response = await axios({
+      method: "post",
+      url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      data: {paramss},
+    })
+    if(response){
+      const receiver = response.data;
+      console.log(receiver);
+    }
+  }
 
   return (
     <div className="loginScreen">
@@ -135,24 +181,6 @@ function Login_page() {
           </div>
         </div>
       </div>
-
-      <footer>
-        <p>
-          Created with <i className="fa fa-heart"></i> by
-          <a target="_blank" href="https://florin-pop.com">
-            Florin Pop
-          </a>
-          - Read how I created this and how you can join the challenge
-          <a
-            target="_blank"
-            href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/"
-          >
-            here
-          </a>
-          .
-        </p>
-      </footer>
-
 
       <Modal
         open={open}
