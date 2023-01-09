@@ -7,7 +7,7 @@ import {
   Routes,
 } from "react-router-dom";
 import Home from "./pages/Home";
-import Student from "./pages/Student";
+import Student from "./pages/Student"
 import Teacher from "./pages/Teacher";
 import Invoice from "./pages/invoice/Invoice";
 import InvoiceGenerator from "./pages/invoice/InvoiceTest"
