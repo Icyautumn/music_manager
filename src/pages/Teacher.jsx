@@ -76,32 +76,13 @@ export function Teacher(props) {
 
   const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
 
-  // const [products, setProducts] = useState([]);
-
-  // const fetchProducts = async () => {
-  //   const response = await axios
-  //     .get("https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/teachers/b8aff9eb-ee6b-4828-9cad-830b7346c5ab", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Access-Control-Allow-Origin': '*',
-  //         'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-  //         'Access-Control-Allow-Credentials': true
-  //       }
-  //     }.catch((err) => console.log(err)));
-
-  //   if (response) {
-  //     const products = response.data;
-
-  //     console.log("Products: ", products);
-  //     setProducts(products);
-  //   }
-  // };
-
+  
   const [products, setProducts] = useState([]);
+  const musicSchoolId="b8aff9eb-ee6b-4828-9cad-830b7346c5ab"
 
   const fetchProducts = async () => {
     const response = await axios
-      .get("https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/teachers/b8aff9eb-ee6b-4828-9cad-830b7346c5ab",
+      .get(`https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/teachers/${musicSchoolId}`,
       {headers:{
         Authorization: `Bearer ${token}`,  
       }})

@@ -37,10 +37,14 @@ function Login_page() {
   const [createEmail, setCreateEmail] = useState("");
   const [createPassword, setCreatePassword] = useState("");
   const [createContact, setCreateContact] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userId, setUserId] = useState("");
 
   const token =
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjQ5MDI4LCJleHAiOjE2NzMzMzU0MjgsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.BgOGdnk6_zdj4W3BCyMbeFVchdBU4ZbAr6i6xje-vcX3CPq0bG8O_U4CTUNHD6ijSxUXTLrD07pQScibRhiYC_MbS758WH4kDIslCF2r4P3vQ5PZhfI9E3ldV_rjIWhxXQP7LkbobRwopfdX5hnJDLZUzDa6YuSj1xkhr2jM9ZSRMiv2Zo1O694SAKEI5paD2rrfvo9eu5XKe8_LGzgymsJb_r_GUiC7tcyxNAR_8ZrhWErLiZEX3IKjo0SOfVZOcG3mXgibvtl65LEMhBRzwWU9z_c-mhteXEX3nWRAKGHdgKnf6q3uavn3oI9rh8P9ff_HDaUFYlim9szcjoi4FA";
-  const paramss = {
+  const params_SignUp = {
     routeKey: "POST /music_portal/account/reg-user",
     parameters: {
       email: { createEmail },
@@ -50,46 +54,49 @@ function Login_page() {
     },
   };
 
-  const headerss = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      // "Access-Control-Allow-Origin": "*",
-      // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      // "Access-Control-Allow-Credentials": true,
+  const params_SignIn = {
+    routeKey: "POST /music_portal/account/user/login",
+    parameters: {
+      email: { email },
+      password: { password },
     },
   };
+
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
-  // const NewSignUp = async () => {
-  //   const response = await axios
-  //     .post(
-  //       "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
-
-  //       paramss,
-  //       { headerss }
-  //     )
-  //     // .catch((err) => console.log(err));
-  //     .catch((err) => console.log(err));
-
-  //   if (response) {
-  //     const receiver = response.data;
-  //     console.log(receiver);
-  //   }
-  // };
 
   const NewSignUp = async () => {
     const response = await axios({
       method: "post",
       url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      data: {paramss},
-    })
-    if(response){
+      data: { params_SignUp },
+    });
+    if (response) {
       const receiver = response.data;
       console.log(receiver);
+      localStorage.setItem('userEmail', JSON.stringify(receiver.email));
+      localStorage.setItem('userId', JSON.stringify(receiver.id));
     }
-  }
+  };
+
+  const SignIn = async () => {
+    const response = await axios({
+      method: "post",
+      url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/user/login",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { params_SignIn },
+    });
+    if (response) {
+      const receiver = response.data;
+      localStorage.setItem('userEmail', JSON.stringify(receiver.email));
+      localStorage.setItem('userId', JSON.stringify(receiver.id));
+
+    }
+  };
 
   return (
     <div className="loginScreen">
@@ -154,10 +161,20 @@ function Login_page() {
               </a>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
             <a onClick="">Forgot your password?</a>
-            <button onClick={handleOpen}>Sign In</button>
+            <button onClick={SignIn}>Sign In</button>
           </form>
         </div>
         <div className={"overlay-container"}>
