@@ -103,7 +103,7 @@ import { useEffect } from "react";
   const [hover, sethover] = useState(false);
   const classes = useStyles();
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} mb={1}>
       <Table sx={{ width: "100%" }} aria-label="student Invoice">
         <TableHead>
           <TableRow>

@@ -76,8 +76,8 @@ function Login_page() {
     if (response) {
       const receiver = response.data;
       console.log(receiver);
-      localStorage.setItem('userEmail', JSON.stringify(receiver.email));
-      localStorage.setItem('userId', JSON.stringify(receiver.id));
+      localStorage.setItem("userEmail", JSON.stringify(receiver.email));
+      localStorage.setItem("userId", JSON.stringify(receiver.id));
     }
   };
 
@@ -92,9 +92,8 @@ function Login_page() {
     });
     if (response) {
       const receiver = response.data;
-      localStorage.setItem('userEmail', JSON.stringify(receiver.email));
-      localStorage.setItem('userId', JSON.stringify(receiver.id));
-
+      localStorage.setItem("userEmail", JSON.stringify(receiver.email));
+      localStorage.setItem("userId", JSON.stringify(receiver.id));
     }
   };
 
@@ -105,7 +104,7 @@ function Login_page() {
         className={SignUp ? "container" : "container , right-panel-active"}
       >
         <div className="form-container sign-up-container">
-          <form action="#">
+          <form action="#" className="formLogin">
             <h1>Create Account</h1>
             <div className="social-container">
               <a onClick="" className="social">
@@ -118,36 +117,42 @@ function Login_page() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
-            <span>or use your email for registration</span>
+            <span className="spanLogin">or use your email for registration</span>
             <input
+              className="InputLogin"
               type="text"
               placeholder="Name"
               value={createName}
               onChange={(event) => setCreateName(event.target.value)}
             />
             <input
+              className="InputLogin"
               type="email"
               placeholder="Email"
               value={createEmail}
               onChange={(event) => setCreateEmail(event.target.value)}
             />
             <input
+              className="InputLogin"
               type="password"
               placeholder="Password"
               value={createPassword}
               onChange={(event) => setCreatePassword(event.target.value)}
             />
             <input
+              className="InputLogin"
               type="text"
               placeholder="Contact"
               value={createContact}
               onChange={(event) => setCreateContact(event.target.value)}
             />
-            <button onClick={NewSignUp}>Sign Up</button>
+            <button className="buttonLog" onClick={NewSignUp}>
+              Sign Up
+            </button>
           </form>
         </div>
         <div className="form-container sign-in-container">
-          <form action="#">
+          <form action="#" className="formLogin">
             <h1>Sign in</h1>
             <div className="social-container">
               <a onClick="" className="social">
@@ -160,38 +165,52 @@ function Login_page() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
-            <span>or use your account</span>
+            <span className="spanLogin">or use your account</span>
             <input
+              className="InputLogin"
               type="email"
               placeholder="Email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
             <input
+              className="InputLogin"
               type="password"
               placeholder="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
             <a onClick="">Forgot your password?</a>
-            <button onClick={SignIn}>Sign In</button>
+            <button className="buttonLog" onClick={SignIn}>
+              Sign In
+            </button>
           </form>
         </div>
         <div className={"overlay-container"}>
           <div className="overlay">
             <div className="overlay-panel overlay-left">
               <h1>Welcome Back!</h1>
-              <p>
+              <p className="loginP">
                 To keep connected with us please login with your personal info
               </p>
-              <button onClick={handleClick} id="signIn" className={"ghost"}>
+              <button
+                onClick={handleClick}
+                id="signIn"
+                className={"ghost, buttonLog"}
+              >
                 Sign In
               </button>
             </div>
             <div className="overlay-panel overlay-right">
               <h1>Hello, Friend!</h1>
-              <p>Enter your personal details and start journey with us</p>
-              <button onClick={handleClick} id="signUp" className={"ghost"}>
+              <p className="loginP">
+                Enter your personal details and start journey with us
+              </p>
+              <button
+                onClick={handleClick}
+                id="signUp"
+                className={"ghost, buttonLog"}
+              >
                 Sign Up
               </button>
             </div>

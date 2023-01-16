@@ -8,7 +8,7 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', sansA-serif;
 	height: 100vh;
 	margin: -20px 0 50px;
 }
@@ -22,7 +22,7 @@ h2 {
 	text-align: center;
 }
 
-p {
+.loginP {
 	font-size: 14px;
 	font-weight: 100;
 	line-height: 20px;
@@ -30,7 +30,7 @@ p {
 	margin: 20px 0 30px;
 }
 
-span {
+.spanLogin {
 	font-size: 12px;
 }
 
@@ -41,7 +41,7 @@ a {
 	margin: 15px 0;
 }
 
-button {
+.buttonLog {
 	border-radius: 20px;
 	border: 1px solid #FF4B2B;
 	background-color: #FF4B2B;
@@ -54,20 +54,20 @@ button {
 	transition: transform 80ms ease-in;
 }
 
-button:active {
+.buttonLog:active {
 	transform: scale(0.95);
 }
 
-button:focus {
+.buttonLog:focus {
 	outline: none;
 }
 
-button.ghost {
+.buttonLog.ghost {
 	background-color: transparent;
 	border-color: #FFFFFF;
 }
 
-form {
+.formLogin {
 	background-color: #FFFFFF;
 	display: flex;
 	align-items: center;
@@ -78,7 +78,7 @@ form {
 	text-align: center;
 }
 
-input {
+.InputLogin {
 	background-color: #eee;
 	border: none;
 	padding: 12px 15px;
@@ -223,27 +223,3 @@ input {
 	width: 40px;
 }
 
-footer {
-    background-color: #222;
-    color: #fff;
-    font-size: 14px;
-    bottom: 0;
-    position: fixed;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 999;
-}
-
-footer p {
-    margin: 10px 0;
-}
-
-footer i {
-    color: red;
-}
-
-footer a {
-    color: #3c97bf;
-    text-decoration: none;
-}

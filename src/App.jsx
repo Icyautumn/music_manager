@@ -13,6 +13,9 @@ import Invoice from "./pages/invoice/Invoice";
 import InvoiceGenerator from "./pages/invoice/InvoiceTest"
 import tw from "twin.macro";
 import Login_page from "./pages/login Page/Login_page";
+import { getMonth } from './pages/calendar/components/util'
+import Calendar from "./pages/calendar/Calendar";
+
 
 const AppContainer = tw.div`
   w-full
@@ -29,6 +32,7 @@ const AppContainer = tw.div`
 
 
 function App() {
+  console.table(getMonth())
   return (
     <Router>
       <>
@@ -47,6 +51,7 @@ function App() {
           <Route path="/invoice" element={[<Navbar />, <InvoiceGenerator />]} />
           <Route path="/invoice_edit" element={[<Navbar />, <Invoice />]} />
           <Route path="/login" element={[<Navbar />, <Login_page />]} />
+          <Route path="/Calendar" element={[<Navbar />, <Calendar />]} />
           {/* <Route path="/save_file" element={[<Navbar />, <Test_invoice />]} /> */}
         </Routes>
       </>
