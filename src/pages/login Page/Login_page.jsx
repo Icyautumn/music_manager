@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./login_page.css";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
+import UserPool from "./UserPool";
+import { AccountContext } from "./Accounts";
+import { useNavigate } from "react-router-dom";
+import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 
 const style = {
   position: "absolute",
@@ -19,7 +23,14 @@ const style = {
 };
 
 function Login_page() {
+  const navigate = useNavigate();
+
+  const forgetPassword = () => {
+    navigate("/ForgetPassword");
+  };
   const [SignUp, SetSignup] = useState(false);
+
+  const { authenticate } = useContext(AccountContext);
 
   const handleClick = (e) => {
     SetSignup((current) => !current);
@@ -64,37 +75,63 @@ function Login_page() {
 
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
-  const NewSignUp = async () => {
-    const response = await axios({
-      method: "post",
-      url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: { params_SignUp },
-    });
-    if (response) {
-      const receiver = response.data;
-      console.log(receiver);
-      localStorage.setItem("userEmail", JSON.stringify(receiver.email));
-      localStorage.setItem("userId", JSON.stringify(receiver.id));
-    }
+  const NewSignUp = async (e) => {
+    e.preventDefault();
+    // const response = await axios({
+    //   method: "post",
+    //   url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/reg-user",
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   data: { params_SignUp },
+    // });
+    // if (response) {
+    //   const receiver = response.data;
+    //   console.log(receiver);
+    //   localStorage.setItem("userEmail", JSON.stringify(receiver.email));
+    //   localStorage.setItem("userId", JSON.stringify(receiver.id));
+    // }
+    const attributes = [
+      new CognitoUserAttribute({ Name: "name", Value: createName }),
+      new CognitoUserAttribute({ Name: "phone_number", Value: "+65" + createContact }),
+    ];
+    UserPool.signUp(
+      createEmail,
+      createPassword,
+      attributes,
+      null,
+      (err, data) => {
+        if (err) console.error(err);
+        console.log(data);
+        // go to confirm registration page
+        navigate("/confirmRegistration");
+      }
+    );
   };
 
-  const SignIn = async () => {
-    const response = await axios({
-      method: "post",
-      url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/user/login",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: { params_SignIn },
-    });
-    if (response) {
-      const receiver = response.data;
-      localStorage.setItem("userEmail", JSON.stringify(receiver.email));
-      localStorage.setItem("userId", JSON.stringify(receiver.id));
-    }
+  const SignIn = async (e) => {
+    e.preventDefault();
+    // e.preventDefault();
+    // const response = await axios({
+    //   method: "post",
+    //   url: "https://1eahwpxaqc.execute-api.us-east-1.amazonaws.com/music_portal/account/user/login",
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   data: { params_SignIn },
+    // });
+    // if (response) {
+    //   const receiver = response.data;
+    //   localStorage.setItem("userEmail", JSON.stringify(receiver.email));
+    //   localStorage.setItem("userId", JSON.stringify(receiver.id));
+
+    authenticate(email, password)
+      .then((data) => {
+        console.log("Logged in!", data);
+      })
+      .catch((err) => {
+        console.error("Failed to login", err);
+      });
   };
 
   return (
@@ -117,7 +154,9 @@ function Login_page() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
-            <span className="spanLogin">or use your email for registration</span>
+            <span className="spanLogin">
+              or use your email for registration
+            </span>
             <input
               className="InputLogin"
               type="text"
@@ -180,7 +219,7 @@ function Login_page() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
-            <a onClick="">Forgot your password?</a>
+            <a onClick={forgetPassword}>Forgot your password?</a>
             <button className="buttonLog" onClick={SignIn}>
               Sign In
             </button>
