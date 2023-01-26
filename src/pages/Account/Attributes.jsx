@@ -2,14 +2,17 @@ import React, { useEffect, useContext, useState } from "react";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import { AccountContext } from "../login Page/Accounts";
 
-export default () => {
+export default function Attributes () {
   const [plan, setPlan] = useState("");
 
   const { getSession } = useContext(AccountContext);
 
   useEffect(() => {
     getSession().then((data) => {
-      setPlan(data["custom:plan"]);
+      // gets the uid of the user
+      console.log(data['user'].username)
+      // check if user has verified email
+      console.log(data['email_verified'])
     });
   }, []);
 

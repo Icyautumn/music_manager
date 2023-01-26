@@ -41,10 +41,10 @@ a {
 	margin: 15px 0;
 }
 
-.buttonLog {
+.buttonLogin {
 	border-radius: 20px;
-	border: 1px solid #FF4B2B;
-	background-color: #FF4B2B;
+	border: 1px solid #2bbfff;
+	background-color: #2bbfff;
 	color: #FFFFFF;
 	font-size: 12px;
 	font-weight: bold;
@@ -86,7 +86,7 @@ a {
 	width: 100%;
 }
 
-.container {
+.containerM {
 	background-color: #fff;
 	border-radius: 10px;
   	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
@@ -96,6 +96,7 @@ a {
 	width: 1000px;
 	max-width: 100%;
 	min-height: 700px;
+	
 }
 
 .form-container {
@@ -111,7 +112,7 @@ a {
 	z-index: 2;
 }
 
-.container.right-panel-active .sign-in-container {
+.containerM.right-panel-active .sign-in-container {
 	transform: translateX(100%);
 }
 
@@ -122,7 +123,7 @@ a {
 	z-index: 1;
 }
 
-.container.right-panel-active .sign-up-container {
+.containerM.right-panel-active .sign-up-container {
 	transform: translateX(100%);
 	opacity: 1;
 	z-index: 5;
@@ -152,14 +153,14 @@ a {
 	z-index: 100;
 }
 
-.container.right-panel-active .overlay-container{
+.containerM.right-panel-active .overlay-container{
 	transform: translateX(-100%);
 }
 
-.overlay {
-	background: #FF416C;
-	background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-	background: linear-gradient(to right, #FF4B2B, #FF416C);
+.overlayB {
+	background: #2bbfff;
+	background: -webkit-linear-gradient(to right, #2bbfff, #2bbfff);
+	background: linear-gradient(to right, #2bbfff, #2bbfff);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 0 0;
@@ -172,7 +173,7 @@ a {
 	transition: transform 0.6s ease-in-out;
 }
 
-.container.right-panel-active .overlay {
+.containerM.right-panel-active .overlayB {
   	transform: translateX(50%);
 }
 
@@ -195,7 +196,7 @@ a {
 	transform: translateX(-20%);
 }
 
-.container.right-panel-active .overlay-left {
+.containerM.right-panel-active .overlay-left {
 	transform: translateX(0);
 }
 
@@ -204,7 +205,7 @@ a {
 	transform: translateX(0);
 }
 
-.container.right-panel-active .overlay-right {
+.containerM.right-panel-active .overlay-right {
 	transform: translateX(20%);
 }
 
@@ -223,3 +224,38 @@ a {
 	width: 40px;
 }
 
+.image-preview {
+	position: relative;
+  }
+  
+.remove-icon {
+	display: none;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	font-size: 20px;
+	color: white;
+	cursor: pointer;
+}
+.image-preview:hover .remove-icon {
+	display: block;
+}
+
+.image-preview {
+	position: relative;
+	display:inline-block;
+  }
+  
+  .remove-icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 20px;
+	color: white;
+	cursor: pointer;
+	display:none;
+  }
+  
+  .image-preview:hover .remove-icon {
+	display: block;
+  }

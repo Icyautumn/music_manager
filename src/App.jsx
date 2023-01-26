@@ -16,6 +16,8 @@ import Status from "./pages/login Page/Status";
 import Settings from "./pages/Account/Settings";
 import ForgetPassword from "./pages/login Page/ForgetPassword";
 import ConfirmRegistration from "./pages/login Page/ConfirmRegistration";
+import Attributes from "./pages/Account/Attributes";
+import Slider from "./pages/ToggleSwitch/Slider";
 
 const AppContainer = tw.div`
   w-full
@@ -62,14 +64,24 @@ function App() {
             path="/login"
             element={[
               <Account>
-                <Status/>,
-                <Navbar />, <Login_page />, <Settings />
-              </Account>,
+                <Status />
+                <Slider />
+              </Account>
             ]}
           />
           <Route path="/Calendar" element={[<Navbar />, <Calendar />]} />
-          <Route path="/ForgetPassword" element={[<Navbar />, <ForgetPassword />]} />
-          <Route path="/confirmRegistration" element={[<Navbar />, <ConfirmRegistration />]} />
+          <Route
+            path="/ForgetPassword"
+            element={[
+              <Account>
+                <Navbar />, <ForgetPassword />, <Attributes />
+              </Account>,
+            ]}
+          />
+          <Route
+            path="/confirmRegistration"
+            element={[<Navbar />, <ConfirmRegistration />]}
+          />
         </Routes>
       </>
     </Router>
