@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import StyledTextField from "./components/StyledTextField";
 import "./Invoice.css";
 // import Table from "./components/Table";
@@ -12,13 +12,20 @@ import Typography from "@mui/material/Typography";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import Pdf from "react-to-pdf";
+import * as htmlToImage from "html-to-image";
 
 const useStyles = makeStyles((theme) => ({
-  addButton:{
+  addButton: {
     "&:hover": {
       "& $Button": {
-        backgroundColor: theme.palette.error.dark,
+        backgroundColor: "#ebebeb",
         color: "black",
+        opacity: 1,
+      },
+      "& $p": {
+        color: "black",
+        opacity: 1,
       },
     },
   },
@@ -66,7 +73,10 @@ const useStyles = makeStyles((theme) => ({
   },
   deleteButton: {
     color: "white",
-    display: "block",
+    display: "inline",
+    position: "relative",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
   },
 }));
 
@@ -96,175 +106,200 @@ function Invoice() {
 
   // }, []);
 
+  const ref = useRef();
+
+  const sendFile = async () => {
+    const dataUrl = await htmlToImage.toPng(ref.current);
+    const link = document.createElement("a");
+    link.download = "invoice.png";
+    link.href = dataUrl;
+    console.log(dataUrl);
+    link.click();
+  };
+
   const classes = useStyles();
   return (
     <body>
-      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow">
-        <Box component="form" noValidate autoComplete="off">
-          <Grid container spacing={2} mb={2}>
-            <Grid item xs={6}>
-              <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-                <StyledTextField
-                  root={classes.root}
-                  id="admin_name"
-                  label="admin name"
-                />
-                <StyledTextField
-                  root={classes.root}
-                  id="company_address"
-                  label="Company's Address"
-                />
-                <StyledTextField
-                  root={classes.root}
-                  id="zipcode"
-                  label="City, State Zip"
-                />
-              </div>
-            </Grid>
-            <Grid item xs={6}>
-              <div sx={{ textAlign: "center" }} elevation={0}>
-                <Typography variant="h2" gutterBottom>
-                  INVOICE
-                </Typography>
-              </div>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2} mb={1}>
-            <Grid item xs={6}>
-              <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-                <Typography sx={{ textAlign: "left" }}>
-                  <b>Bill To:</b>
-                </Typography>
-                <StyledTextField
-                  root={classes.root}
-                  id="client_name"
-                  label="Client's Name"
-                />
-                <StyledTextField
-                  root={classes.root}
-                  id="client_address"
-                  label="client's Address"
-                />
-                <StyledTextField
-                  root={classes.root}
-                  id="client_zipcode"
-                  label="client's Zipcode"
-                />
-              </div>
-            </Grid>
-            <Grid item xs={6}>
-              <div>
-                <TextField
-                  id="Invoice#"
-                  label="Invoice #"
-                  value={uuid}
-                  disabled
-                  fullWidth
-                  required
-                  variant="filled"
-                  size="small"
-                  className={classes.root}
-                 
-                  InputProps={{ disableUnderline: true }}
-                />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Invoice Date"
-                    value={invoiceDate}
-                    sx={{ backgroundColor: 'white' }}
-                    onChange={(newValue) => {
-                      setInvoiceDate(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        fullWidth
-                        size="small"
-                        variant="filled"
-                        className={classes.root}
-                        sx={{
-                          input: { backgroundColor: "white" },
-                          label: { backgroundColor: "white" },
-
-                        }}
-                        InputProps={{ disableUnderline: true }}
-                        {...params}
-                      />
-                    )}
+      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white shadow-rounded">
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          ref={ref}
+          id="ref"
+          item
+          sx={{backgroundColor: "white"}}
+        >
+          <Grid container item>
+            <Grid container spacing={2} mb={2}>
+              <Grid item xs={6}>
+                <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                  <StyledTextField
+                    root={classes.root}
+                    id="admin_name"
+                    label="admin name"
                   />
-                </LocalizationProvider>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Due Date"
-                    value={dueDateInvoice}
-                    onChange={(newValue) => {
-                      setDueDateInvoice(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        fullWidth
-                        size="small"
-                        variant="filled"
-                        className={classes.root}
-                        sx={{
-                          input: { backgroundColor: "white" },
-                          label: { backgroundColor: "white" },
-
-                        }}
-                        InputProps={{ disableUnderline: true }}
-                        {...params}
-                      />
-                    )}
+                  <StyledTextField
+                    root={classes.root}
+                    id="company_address"
+                    label="Company's Address"
                   />
-                </LocalizationProvider>
-              </div>
+                  <StyledTextField
+                    root={classes.root}
+                    id="zipcode"
+                    label="City, State Zip"
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div sx={{ textAlign: "center" }} elevation={0}>
+                  <Typography variant="h2" gutterBottom>
+                    INVOICE
+                  </Typography>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-          <StyledTableContainer
-            tableRowStyle={classes.TableRow}
-            tableStyle={classes.table}
-            deleteButton={classes.deleteButton}
-            addItemButtonStyle={classes.addButton}
-          />
 
-          <Grid container spacing={2} mb={2} mt={2}>
-            <Grid item xs={12}>
-              <div elevation={0}>
-                <TextField
-                  fullWidth
-                  id="Notes"
-                  label="Notes"
-                  variant="filled"
-                  size="small"
-                  multiline
-                  maxRows={4}
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-              </div>
-              <div elevation={0}>
-                <TextField
-                  fullWidth
-                  id="Terms"
-                  label="Terms & Condition"
-                  variant="filled"
-                  size="small"
-                  multiline
-                  maxRows={4}
-                  className={classes.root}
-                  InputProps={{ disableUnderline: true }}
-                />
-              </div>
+            <Grid container spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                  <Typography sx={{ textAlign: "left" }}>
+                    <b>Bill To:</b>
+                  </Typography>
+                  <StyledTextField
+                    root={classes.root}
+                    id="client_name"
+                    label="Client's Name"
+                  />
+                  <StyledTextField
+                    root={classes.root}
+                    id="client_address"
+                    label="client's Address"
+                  />
+                  <StyledTextField
+                    root={classes.root}
+                    id="client_zipcode"
+                    label="client's Zipcode"
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div>
+                  <TextField
+                    id="Invoice#"
+                    label="Invoice #"
+                    value={uuid}
+                    disabled
+                    fullWidth
+                    required
+                    variant="filled"
+                    size="small"
+                    className={classes.root}
+                    InputProps={{ disableUnderline: true }}
+                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Invoice Date"
+                      value={invoiceDate}
+                      sx={{ backgroundColor: "white" }}
+                      onChange={(newValue) => {
+                        setInvoiceDate(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          fullWidth
+                          size="small"
+                          variant="filled"
+                          className={classes.root}
+                          sx={{
+                            input: { backgroundColor: "white" },
+                            label: { backgroundColor: "white" },
+                          }}
+                          InputProps={{ disableUnderline: true }}
+                          {...params}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Due Date"
+                      value={dueDateInvoice}
+                      onChange={(newValue) => {
+                        setDueDateInvoice(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          fullWidth
+                          size="small"
+                          variant="filled"
+                          className={classes.root}
+                          sx={{
+                            input: { backgroundColor: "white" },
+                            label: { backgroundColor: "white" },
+                          }}
+                          InputProps={{ disableUnderline: true }}
+                          {...params}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </Grid>
+            </Grid>
+            <StyledTableContainer
+              tableRowStyle={classes.TableRow}
+              tableStyle={classes.table}
+              deleteButton={classes.deleteButton}
+              addItemButtonStyle={classes.addButton}
+            />
+
+            <Grid container spacing={2} mb={2} mt={2}>
+              <Grid item xs={12}>
+                <div elevation={0}>
+                  <TextField
+                    fullWidth
+                    id="Notes"
+                    label="Notes"
+                    variant="filled"
+                    size="small"
+                    multiline
+                    maxRows={4}
+                    className={classes.root}
+                    InputProps={{ disableUnderline: true }}
+                  />
+                </div>
+                <div elevation={0}>
+                  <TextField
+                    fullWidth
+                    id="Terms"
+                    label="Terms & Condition"
+                    variant="filled"
+                    size="small"
+                    multiline
+                    maxRows={4}
+                    className={classes.root}
+                    InputProps={{ disableUnderline: true }}
+                  />
+                </div>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
 
         <button
-          onClick={() => setShowInvoice(false)}
+          onClick={sendFile}
           className="mt-5 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300"
         >
-          Save Invoice
+          Send Invoice
         </button>
+        <Pdf targetRef={ref} filename="document.pdf" onComplete>
+          {({ toPdf, onComplete }) => (
+            <button onClick={toPdf} className="button">
+              Generate PDF
+            </button>
+          )}
+        </Pdf>
       </main>
     </body>
   );

@@ -39,7 +39,7 @@ function App() {
       <>
         <Routes>
           <Route
-            path="/"
+            path="/home/:token"
             element={[
               <Navbar />,
               <AppContainer>
@@ -48,7 +48,7 @@ function App() {
             ]}
           />
           <Route
-            path="/teachers"
+            path="/teachers/:token"
             element={[
               <Navbar />,
               <AppContainer>
@@ -56,12 +56,12 @@ function App() {
               </AppContainer>,
             ]}
           />
-          <Route path="/products" element={[<Navbar />, <Student />]} />
-          <Route path="/invoice" element={[<Navbar />, <InvoiceGenerator />]} />
-          <Route path="/invoice_edit" element={[<Navbar />, <Invoice />]} />
+          <Route path="/products/:token" element={[<Navbar />, <Student />]} />
+          <Route path="/invoice/:token" element={[<Navbar />, <InvoiceGenerator />]} />
+          <Route path="/pdf/:token" element={[<Navbar />, <Invoice />]} />
 
           <Route
-            path="/login"
+            path="/"
             element={[
               <Account>
                 <Status />
@@ -69,19 +69,7 @@ function App() {
               </Account>
             ]}
           />
-          <Route path="/Calendar" element={[<Navbar />, <Calendar />]} />
-          <Route
-            path="/ForgetPassword"
-            element={[
-              <Account>
-                <Navbar />, <ForgetPassword />, <Attributes />
-              </Account>,
-            ]}
-          />
-          <Route
-            path="/confirmRegistration"
-            element={[<Navbar />, <ConfirmRegistration />]}
-          />
+          <Route path="/Calendar/:token" element={[<Navbar />, <Calendar />]} />
         </Routes>
       </>
     </Router>

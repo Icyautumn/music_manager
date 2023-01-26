@@ -110,7 +110,7 @@ import { useEffect } from "react";
             <StyledTableCell width="40%">Item Description</StyledTableCell>
             <StyledTableCell width="40%">Date:</StyledTableCell>
             <StyledTableCell width="50%">Amount</StyledTableCell>
-            <StyledTableCell width="50%"></StyledTableCell>
+            {/* <StyledTableCell width="50%"></StyledTableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -189,7 +189,7 @@ import { useEffect } from "react";
               <StyledTableCell>
                 <AiFillDelete
                   size={15}
-                  style={{ color: hover ? "black" : "white" }}
+                  // style={{ color: hover ? "white" : "white" ,  display:"none"}}
                   onClick={() => deleteItem(row.id)}
                 />
               </StyledTableCell>

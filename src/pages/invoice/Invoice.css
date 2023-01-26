@@ -28,3 +28,8 @@ tr:hover .delete-button {
 
 }
 
+@media print {
+    .hide{
+        display: none
+    }
+}

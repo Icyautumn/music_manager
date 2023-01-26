@@ -18,6 +18,8 @@ import {
   Paper,
 } from "@material-ui/core";
 
+import Pdf from "react-to-pdf"
+
 export const theme = createTheme({
   overrides: {
     MuiCard: {
@@ -35,7 +37,7 @@ export const theme = createTheme({
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    box:{
+    box: {
       "&:hover": {
         "& $deleteButton": {
           backgroundColor: theme.palette.error.dark,
@@ -183,21 +185,25 @@ function InvoiceGenerator() {
     // });
   };
 
+  const ref = useRef();
+
   return (
     <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow">
-      <div className="invoice-generator container" sx={{ textAlign: "center" }}>
+      <div
+        className="invoice-generator container"
+        sx={{ textAlign: "center" }}
+        ref={ref}
+      >
         <h1>Invoice Generator</h1>
         <form>
-          <Box noValidate >
+          <Box noValidate>
             <Grid container spacing={2} mb={2}>
               <Grid xs={6}>
-              
-                  <TextField
-                    label="Client Name"
-                    value={clientName}
-                    onChange={(event) => setClientName(event.target.value)}
-                  />
-                
+                <TextField
+                  label="Client Name"
+                  value={clientName}
+                  onChange={(event) => setClientName(event.target.value)}
+                />
               </Grid>
             </Grid>
 
@@ -294,7 +300,13 @@ function InvoiceGenerator() {
             </div>
             <Typography variant="h6">Total: {calculateTotal()}</Typography>
           </Box>
-          <Button onClick={savePDF()}>Save as PDF</Button>
+          <Pdf targetRef={ref} filename="document.pdf">
+            {({ toPdf }) => (
+              <button onClick={toPdf} className="button">
+                Generate PDF
+              </button>
+            )}
+          </Pdf>
         </form>
       </div>
     </main>

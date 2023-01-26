@@ -62,7 +62,7 @@ export default function StyledTableContainer({
     },
   }));
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={addItemButtonStyle}>
       <Table sx={{ width: "100%" }} aria-label="student Invoice">
         <TableHead>
           <TableRow>
@@ -103,7 +103,6 @@ export default function StyledTableContainer({
                       <TextField
                         variant="filled"
                         size="small"
-                        className={tableStyle}
                         sx={{
                           input: { backgroundColor: "white" },
                           label: { backgroundColor: "white" },
@@ -145,7 +144,7 @@ export default function StyledTableContainer({
                   }
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="hide">
                 <AiFillDelete
                   size={15}
                   className={deleteButton}
@@ -154,7 +153,7 @@ export default function StyledTableContainer({
               </TableCell>
             </TableRow>
           ))}
-          <Grid>
+          <Grid className="hide">
             <Box container sx={{ my: 1 }} className={addItemButtonStyle}>
               <Button >
                 <AiOutlinePlusCircle className={deleteButton} size={25} onClick={addItem} />

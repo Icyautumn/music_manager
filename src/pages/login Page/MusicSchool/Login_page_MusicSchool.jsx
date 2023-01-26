@@ -11,6 +11,7 @@ import { CognitoUser } from "amazon-cognito-identity-js";
 import Pool from "../UserPool";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -26,6 +27,8 @@ const style = {
 };
 
 function Login_page_MusicSchool() {
+
+  const { getSession } = useContext(AccountContext);
   const navigate = useNavigate();
 
   const forgetPassword = () => {
@@ -180,7 +183,15 @@ function Login_page_MusicSchool() {
 
     authenticate(email, password)
       .then((data) => {
-        console.log("Logged in!", data);
+        getSession().then((data) => {
+          // gets the uid of the user
+          console.log(data['nickname'])
+          localStorage.setItem("id", data['nickname'])
+          // check if user has verified email
+          console.log(data['email_verified'])
+          navigate(`/home/${data['nickname']}`)
+
+        });
       })
       .catch((err) => {
         console.error("Failed to login", err);

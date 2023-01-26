@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,12 @@ function Navbar() {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+
+  const [token,setToken] = useState("");
   
+  useEffect(()=>{
+    setToken(localStorage.getItem("id"))
+  })
 
   return (
     <>
@@ -31,7 +36,7 @@ function Navbar() {
             {SidebarData.map((item, index) => {
               return (
                 <li key={index} className={item.cName}>
-                  <Link to={item.path}>
+                  <Link to={item.path+token}>
                     {item.icon}
                     <span className='sidebarSpan'>{item.title}</span>
                   </Link>
