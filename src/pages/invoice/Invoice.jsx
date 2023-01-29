@@ -1,6 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import StyledTextField from "./components/StyledTextField";
 import "./Invoice.css";
+import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 // import Table from "./components/Table";
 import { makeStyles } from "@material-ui/core/styles";
 import StyledTableContainer from "./components/StyledTableContainer";
@@ -99,28 +101,74 @@ function Invoice() {
     setNotes(event.target.value);
   }
 
-  // useEffect(() => {
-  //   addItem();
-  //   const newUUID = uuidv4();
-  //   setUUID(newUUID);
+  const [music_school_id, setMusic_school_id] = useState('') 
 
-  // }, []);
+  useEffect(() => {
+    setMusic_school_id(localStorage.getItem("id"));
+    const newUUID = uuidv4();
+    setUUID(newUUID);
+
+  }, []);
 
   const ref = useRef();
+
+  const student_id = "asfdf123423234123"
+  const payment = "not paid";
+  const [total, setTotal] = useState()
+  const [pdf, setPdf] = useState()
+
+  const invoiceDetails = {
+    routeKey: "POST /music_portal/invoice",
+    parameters: {
+      id: { uuid },
+      student_id: { student_id },
+      music_school_id: { music_school_id },
+      Invoice: { pdf },
+      date: { invoiceDate },
+      payment: { payment },
+      amount: { total },
+      due_date: {dueDateInvoice}
+    },
+  };
+
+  const getTotal = (total) => {
+    setTotal(total)
+  }
 
   const sendFile = async () => {
     const dataUrl = await htmlToImage.toPng(ref.current);
     const link = document.createElement("a");
     link.download = "invoice.png";
     link.href = dataUrl;
+    setPdf(dataUrl)
     console.log(dataUrl);
     link.click();
+
+
+    const response = await axios({
+      method: "post",
+      url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/invoice",
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+      data: { invoiceDetails },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+    }
   };
 
   const classes = useStyles();
   return (
     <body>
-      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white shadow-rounded">
+      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow">
         <Box
           component="form"
           noValidate
@@ -203,7 +251,7 @@ function Invoice() {
                       value={invoiceDate}
                       sx={{ backgroundColor: "white" }}
                       onChange={(newValue) => {
-                        setInvoiceDate(newValue);
+                        setInvoiceDate(newValue["$d"].getTime());
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -226,7 +274,7 @@ function Invoice() {
                       label="Due Date"
                       value={dueDateInvoice}
                       onChange={(newValue) => {
-                        setDueDateInvoice(newValue);
+                        setDueDateInvoice(newValue["$d"].getTime());
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -252,6 +300,7 @@ function Invoice() {
               tableStyle={classes.table}
               deleteButton={classes.deleteButton}
               addItemButtonStyle={classes.addButton}
+              getTotal={getTotal}
             />
 
             <Grid container spacing={2} mb={2} mt={2}>

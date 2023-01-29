@@ -18,6 +18,7 @@ import ForgetPassword from "./pages/login Page/ForgetPassword";
 import ConfirmRegistration from "./pages/login Page/ConfirmRegistration";
 import Attributes from "./pages/Account/Attributes";
 import Slider from "./pages/ToggleSwitch/Slider";
+import AllInvoice from "./pages/invoice/Read_invoice/AllInvoice";
 
 const AppContainer = tw.div`
   w-full
@@ -57,8 +58,8 @@ function App() {
             ]}
           />
           <Route path="/products/:token" element={[<Navbar />, <Student />]} />
-          <Route path="/invoice/:token" element={[<Navbar />, <InvoiceGenerator />]} />
-          <Route path="/pdf/:token" element={[<Navbar />, <Invoice />]} />
+          <Route path="/invoice_edit/:token" element={[<Navbar />, <AllInvoice />]} />
+          <Route path="/invoice/:token" element={[<Navbar />, <Invoice />]} />
 
           <Route
             path="/"

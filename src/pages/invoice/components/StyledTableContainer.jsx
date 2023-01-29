@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
@@ -15,13 +15,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Box, Grid } from "@material-ui/core";
-import { useState } from "react";
 export default function StyledTableContainer({
   tableRowStyle,
   tableStyle,
   deleteButton,
-  addItemButtonStyle
+  addItemButtonStyle,
+  getTotal,
 }) {
+  useEffect(() => {
+    addItem();
+  }, []);
   const [data, setData] = useState([]);
 
   const addItem = () => {
@@ -35,13 +38,8 @@ export default function StyledTableContainer({
     ]);
   };
 
-  const calculateTotal = () => {
-    let total = 0;
-    data.forEach((item) => {
-      total += parseInt(item.amount);
-    });
-    return total;
-  };
+  const [total, setTotal] = useState();
+
   const deleteItem = (index) => {
     const newData = [...data];
     newData.splice(index, 1);
@@ -51,6 +49,13 @@ export default function StyledTableContainer({
     const newData = [...data];
     newData[id][type] = value;
     setData(newData);
+
+    let amount = 0;
+    data.forEach((item) => {
+      amount += parseInt(item.amount);
+    });
+    setTotal(amount);
+    getTotal(amount);
   };
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -106,7 +111,6 @@ export default function StyledTableContainer({
                         sx={{
                           input: { backgroundColor: "white" },
                           label: { backgroundColor: "white" },
-
                         }}
                         InputProps={{ disableUnderline: true }}
                         {...params}
@@ -155,11 +159,16 @@ export default function StyledTableContainer({
           ))}
           <Grid className="hide">
             <Box container sx={{ my: 1 }} className={addItemButtonStyle}>
-              <Button >
-                <AiOutlinePlusCircle className={deleteButton} size={25} onClick={addItem} />
+              <Button>
+                <AiOutlinePlusCircle
+                  className={deleteButton}
+                  size={25}
+                  onClick={addItem}
+                />
               </Button>
 
-              <p className={deleteButton}
+              <p
+                className={deleteButton}
                 style={{
                   marginTop: "5px",
                   display: "inline",
@@ -174,7 +183,7 @@ export default function StyledTableContainer({
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={1}>total</TableCell>
-            <TableCell align="right">${calculateTotal()}</TableCell>
+            <TableCell align="right">${total}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
