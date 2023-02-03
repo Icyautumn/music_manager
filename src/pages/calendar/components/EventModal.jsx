@@ -1,26 +1,13 @@
 import React, { useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
-
-const labelsClasses = [
-  "indigo",
-  "gray",
-  "green",
-  "blue",
-  "red",
-  "purple",
-];
+import axios from "axios";
+const labelsClasses = ["indigo", "gray", "green", "blue", "red", "purple"];
 
 export default function EventModal() {
-  const {
-    setShowEventModal,
-    daySelected,
-    dispatchCalEvent,
-    selectedEvent,
-  } = useContext(GlobalContext);
+  const { setShowEventModal, daySelected, dispatchCalEvent, selectedEvent } =
+    useContext(GlobalContext);
 
-  const [title, setTitle] = useState(
-    selectedEvent ? selectedEvent.title : ""
-  );
+  const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
   const [description, setDescription] = useState(
     selectedEvent ? selectedEvent.description : ""
   );
@@ -30,7 +17,7 @@ export default function EventModal() {
       : labelsClasses[0]
   );
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const calendarEvent = {
       title,
@@ -40,9 +27,35 @@ export default function EventModal() {
       id: selectedEvent ? selectedEvent.id : Date.now(),
     };
     if (selectedEvent) {
-      dispatchCalEvent({ type: "update", payload: calendarEvent });
+      const response = await axios({
+        method: "PUT",
+        url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/{lesson_id}",
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        data: { calendarEvent },
+      });
+      if (response) {
+        const receiver = await response.data;
+        console.log("response", receiver);
+        dispatchCalEvent({ type: "update", payload: calendarEvent });
+      }
+      
     } else {
-      dispatchCalEvent({ type: "push", payload: calendarEvent });
+      const response = await axios({
+        method: "POST",
+        url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson",
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        data: { calendarEvent },
+      });
+      if (response) {
+        const receiver = await response.data;
+        console.log("response", receiver);
+        dispatchCalEvent({ type: "push", payload: calendarEvent });
+      }
+      
     }
 
     setShowEventModal(false);
@@ -57,11 +70,21 @@ export default function EventModal() {
           <div>
             {selectedEvent && (
               <span
-                onClick={() => {
-                  dispatchCalEvent({
-                    type: "delete",
-                    payload: selectedEvent,
+                onClick={async() => {
+
+                  const response = await axios({
+                    method: "DELETE",
+                    url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/{lesson_id}",
+                    // headers: {
+                    //   Authorization: `Bearer ${token}`,
+                    // },
+                    data: { selectedEvent },
                   });
+                  if (response) {
+                    const receiver = await response.data;
+                    console.log("response", receiver);
+                    dispatchCalEvent({ type: "delete", payload: selectedEvent });
+                  }
                   setShowEventModal(false);
                 }}
                 className="material-icons-outlined text-gray-400 cursor-pointer"
@@ -77,8 +100,10 @@ export default function EventModal() {
           </div>
         </header>
         <div className="p-3">
-          <div className="grid grid-cols-1/5 items-end gap-y-7"
-          style={{ display: "grid", "grid-template-columns": "1fr 5fr" }}>
+          <div
+            className="grid grid-cols-1/5 items-end gap-y-7"
+            style={{ display: "grid", "grid-template-columns": "1fr 5fr" }}
+          >
             <div></div>
             <input
               type="text"
