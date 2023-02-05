@@ -1,11 +1,17 @@
 import React, { useContext, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
 import axios from "axios";
+import dayjs from "dayjs";
+import { TimePicker } from 'antd';
+
 const labelsClasses = ["indigo", "gray", "green", "blue", "red", "purple"];
 
 export default function EventModal() {
   const { setShowEventModal, daySelected, dispatchCalEvent, selectedEvent } =
     useContext(GlobalContext);
+  const format = "HH:mm";
+  const [startTime, setStartTime] = useState()
+  const [endTime, setEndTime] = useState()
 
   const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
   const [description, setDescription] = useState(
@@ -17,6 +23,18 @@ export default function EventModal() {
       : labelsClasses[0]
   );
 
+  const onChange = (time) =>{
+    console.log(time)
+    console.log(time[0].$d)
+    console.log((time[0].$d).toLocaleTimeString())
+    setStartTime((time[0].$d).toLocaleTimeString())
+    console.log(time[1].$d)
+    console.log((time[1].$d).toLocaleTimeString())
+    setEndTime((time[1].$d).toLocaleTimeString())
+    // console.log(daySelected)
+  }
+  
+
   async function handleSubmit(e) {
     e.preventDefault();
     const calendarEvent = {
@@ -25,6 +43,8 @@ export default function EventModal() {
       label: selectedLabel,
       day: daySelected.valueOf(),
       id: selectedEvent ? selectedEvent.id : Date.now(),
+      startTime: startTime,
+      endTime: endTime
     };
     if (selectedEvent) {
       const response = await axios({
@@ -40,7 +60,6 @@ export default function EventModal() {
         console.log("response", receiver);
         dispatchCalEvent({ type: "update", payload: calendarEvent });
       }
-      
     } else {
       const response = await axios({
         method: "POST",
@@ -55,7 +74,6 @@ export default function EventModal() {
         console.log("response", receiver);
         dispatchCalEvent({ type: "push", payload: calendarEvent });
       }
-      
     }
 
     setShowEventModal(false);
@@ -70,8 +88,7 @@ export default function EventModal() {
           <div>
             {selectedEvent && (
               <span
-                onClick={async() => {
-
+                onClick={async () => {
                   const response = await axios({
                     method: "DELETE",
                     url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/{lesson_id}",
@@ -83,7 +100,10 @@ export default function EventModal() {
                   if (response) {
                     const receiver = await response.data;
                     console.log("response", receiver);
-                    dispatchCalEvent({ type: "delete", payload: selectedEvent });
+                    dispatchCalEvent({
+                      type: "delete",
+                      payload: selectedEvent,
+                    });
                   }
                   setShowEventModal(false);
                 }}
@@ -117,7 +137,12 @@ export default function EventModal() {
             <span className="material-icons-outlined text-gray-400">
               schedule
             </span>
-            <p>{daySelected.format("dddd, MMMM DD")}</p>
+            <span className="display: flex">
+              <p style={{paddingRight: 10}}>{daySelected.format("dddd")}, <br /> {daySelected.format("MMMM DD")}</p>
+              
+              <TimePicker.RangePicker defaultValue={daySelected} format={format} onChange={onChange}/>
+            </span>
+
             <span className="material-icons-outlined text-gray-400">
               segment
             </span>

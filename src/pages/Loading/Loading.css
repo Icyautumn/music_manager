@@ -1,0 +1,118 @@
+.loading_body {
+    font-family: 'Roboto', sans-serif;
+  }
+  #svgs {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    margin-top: -75px;
+    margin-left: -75px;
+  }
+  .loading_h1 {
+    width: 170px;
+    height: 36px;
+    font-family: Roboto;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 36px;
+    text-align: center;
+    top: 158px;
+    left: -10px;
+    position: absolute;
+    margin: 0;
+    color: #0D0D0D;
+  }
+  #solNotes {
+    top: -2px;
+    left: -12px;
+    position: absolute;
+    width: 164px;
+    height: 156px;
+    animation: n-all 1s linear 0s 1 alternate;
+    animation-fill-mode: backwards;
+  }
+  .nScale0 {
+    animation: n-main 1s linear 0s infinite alternate;
+    transform-origin: 50% 50%;
+  }
+  .nScale1 {
+    animation: n-scale 4s linear 0.5s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 62.8% 7.69%;
+  }
+  .nScale2 {
+    animation: n-scale 4s linear 1s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 37.8% 21.15%;
+  }
+  .nScale3 {
+    animation: n-scale 4s linear 1.5s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 19.51% 48.08%;
+  }
+  .nScale4 {
+    animation: n-scale 4s linear 2s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 31.1% 69.23%;
+  }
+  .nScale5 {
+    animation: n-scale 4s linear 2.5s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 46.95% 91.03%;
+  }
+  .nScale6 {
+    animation: n-scale 4s linear 3s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 79.27% 75.64%;
+  }
+  .nScale7 {
+    animation: n-scale 4s linear 3.5s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 84.76% 45.51%;
+  }
+  .nScale8 {
+    animation: n-scale 4s linear 4s infinite alternate;
+    animation-fill-mode: backwards;
+    transform-origin: 73.17% 22.44%;
+  }
+  @keyframes n-scale {
+    0% {
+      transform: scale(0);
+    }
+    35% {
+      transform: scale(0);
+    }
+    45% {
+      transform: scale(0.5);
+    }
+    50% {
+      transform: scale(1);
+    }
+    55% {
+      transform: scale(0.5);
+    }
+    65% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(0);
+    }
+  }
+  @keyframes n-main {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(4deg);
+    }
+  }
+  @keyframes n-all {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }

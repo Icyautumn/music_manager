@@ -167,8 +167,8 @@ function Invoice() {
 
   const classes = useStyles();
   return (
-    <body>
-      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow">
+    <body style={{display: 'grid'}}>
+      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow display:flex">
         <Box
           component="form"
           noValidate
