@@ -4,6 +4,7 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import tw from "twin.macro";
 import { GlobalFilter } from "../../../components/globalFilter";
 import dayjs from "dayjs";
+import { useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -61,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function AllInvoice(props) {
+  const urlParameters = useParams();
   const classes = useStyles();
 
   const [page, setPage] = React.useState(0);
@@ -79,10 +81,6 @@ export function AllInvoice(props) {
 
   const [products, setProducts] = useState([]);
   const [musicSchoolId, setMusicSchoolId] = useState();
-  useEffect(() => {
-    setMusicSchoolId(localStorage.getItem("id"));
-    console.log(musicSchoolId);
-  }, []);
 
   const invoiceDetails = {
     routeKey: "POST /music_portal/invoice/{music_school_id}",
@@ -91,13 +89,17 @@ export function AllInvoice(props) {
     },
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
   const fetchProducts = async () => {
+    console.log(urlParameters.token)
+    console.log(urlParameters.student_id)
     const response = await axios({
-      method: "post",
-        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/invoice/${musicSchoolId}`,
-    //   url: `https://fakestoreapi.com/products`,
-        data: { invoiceDetails },
+      method: "GET",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/invoice/${urlParameters.token}/${urlParameters.student_id}`,
     }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -113,69 +115,6 @@ export function AllInvoice(props) {
       setProducts(receiver["Items"]);
     }
   };
-
-//   const data = useMemo(
-//     () => [
-//       {
-//         title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-//         id: 1,
-//         price: 109.95,
-//         description:
-//           "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-//         category: "men's clothing",
-//         image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-//         rating: {
-//           rate: 3.9,
-//           count: 120,
-//         },
-//       },
-//       {
-//         title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-//         id: 1,
-//         price: 109.95,
-//         description:
-//           "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-//         category: "men's clothing",
-//         image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-//         rating: {
-//           rate: 3.9,
-//           count: 120,
-//         },
-//       },
-//       {
-//         title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-//         id: 1,
-//         price: 109.95,
-//         description:
-//           "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-//         category: "men's clothing",
-//         image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-//         rating: {
-//           rate: 3.9,
-//           count: 120,
-//         },
-//       },
-//     ],
-//     []
-//   );
-
-//   const columns = useMemo(
-//     () => [
-//       {
-//         Header: "Id",
-//         accessor: "id",
-//       },
-//       {
-//         Header: "Price",
-//         accessor: "price",
-//       },
-//       {
-//         Header: "Title",
-//         accessor: "title",
-//       },
-//     ],
-//     []
-//   );
 
   const downloadPdf = (value) => {
     const link = document.createElement("a");
@@ -193,43 +132,41 @@ export function AllInvoice(props) {
             // .filter((key) => key !== "rating")
             // .filter(
             //   (key) => key !== "description")
-              .filter((key) => key !== "id")
-              .filter((key) => key !== "music_school_id")
+            .filter((key) => key !== "id")
+            .filter((key) => key !== "music_school_id")
             //   .filter((key) => key !== "id")
-            
 
             .map((key) => {
-               
               if (key === "Invoice")
                 return {
                   Header: key,
                   accessor: key,
                   Cell: ({ value }) => (
-            //         <img
-            //           src={value}
-            //           style={{
-            //             width: 50,
-            //             height: 50,
-            //           }}
-            //         />
+                    //         <img
+                    //           src={value}
+                    //           style={{
+                    //             width: 50,
+                    //             height: 50,
+                    //           }}
+                    //         />
                     <button onClick={() => downloadPdf(value)}>Download</button>
                   ),
                 };
-            if(key === "date")
-            return {
-                Header: key,
-                accessor: key,
-                Cell: ({ value }) => (
-          //         <img
-          //           src={value}
-          //           style={{
-          //             width: 50,
-          //             height: 50,
-          //           }}
-          //         />
-                  <p>{(new Date(value)).toLocaleDateString()}</p>
-                ),
-              };
+              if (key === "date")
+                return {
+                  Header: key,
+                  accessor: key,
+                  Cell: ({ value }) => (
+                    //         <img
+                    //           src={value}
+                    //           style={{
+                    //             width: 50,
+                    //             height: 50,
+                    //           }}
+                    //         />
+                    <p>{new Date(value).toLocaleDateString()}</p>
+                  ),
+                };
 
               return { Header: key, accessor: key };
             })
@@ -254,10 +191,10 @@ export function AllInvoice(props) {
 
   const tableInstance = useTable(
     {
-        columns: productsColumns,
-        data: productsData,
-    //   columns,
-    //   data,
+      columns: productsColumns,
+      data: productsData,
+      //   columns,
+      //   data,
     },
     useGlobalFilter,
     tableHooks,
@@ -275,9 +212,7 @@ export function AllInvoice(props) {
     state,
   } = tableInstance;
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  
 
   return (
     <Grid>

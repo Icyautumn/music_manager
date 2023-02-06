@@ -95,7 +95,7 @@ a {
 	overflow: hidden;
 	width: 1000px;
 	max-width: 100%;
-	min-height: 700px;
+	height: 700px;
 }
 
 .form-container {

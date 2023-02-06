@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { TextField } from "@mui/material";
 
-export default function StyledTextField({ id, label, root }) {
+export default function StyledTextField({ id, label, root, default_value }) {
   return (
     <TextField
       id={id}
@@ -12,6 +12,7 @@ export default function StyledTextField({ id, label, root }) {
       variant="filled"
       size="small"
       className={root}
+      defaultValue={default_value}
       InputProps={{ disableUnderline: true }}
     />
   );

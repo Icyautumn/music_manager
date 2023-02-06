@@ -7,6 +7,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import Stack from "@mui/material/Stack";
 import { Button, Avatar } from "@material-ui/core";
 import Loading from "../Loading/Loading";
+import Instruments from "./Instruments";
 
 function Student_details() {
   const urlParameters = useParams();
@@ -32,7 +33,7 @@ function Student_details() {
       const student = await response.data;
       setProfile(student);
 
-      console.log("Products: ", student);
+      console.log("details: ", student);
       setLoading(false);
     }
   };
@@ -43,9 +44,9 @@ function Student_details() {
         <Loading/>
       ) : (
         <div className="student-profile py-4">
-          <div className="container">
+          <div style={{width: "100%", display: "grid", justifyContent: "center"}}>
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-lg-3">
                 <div className="card shadow-sm">
                   <div className="card-header bg-transparent text-center">
                     <Avatar
@@ -55,7 +56,7 @@ function Student_details() {
                     />
                     <h3>{profile[0].name}</h3>
                   </div>
-                  <div className="card-body">
+                  <div className="card-body ">
                     <p className="mb-0">
                       <strong className="pr-1">Email</strong>
                       {profile[0].email}
@@ -64,10 +65,11 @@ function Student_details() {
                       <strong className="pr-1">Contact:</strong>
                       {profile[0].contact}
                     </p>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} >
                       <Button
                         variant="outlined"
                         startIcon={<DescriptionIcon />}
+                        onClick={() => navigate(`/view_invoice/${urlParameters.token}/${urlParameters.student_id}`)}
                       >
                         Invoice Record
                       </Button>
@@ -84,44 +86,19 @@ function Student_details() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8">
+              <div className="col-lg-9">
                 <div className="card shadow-sm">
                   <div className="card-header bg-transparent border-0">
                     <h3 className="mb-0">
-                      <i className="far fa-clone pr-1"></i>General Information
+                      <i className="far fa-clone pr-1"></i>Instruments learning
                     </h3>
                   </div>
                   <div className="card-body pt-0">
-                    <table className="table table-bordered">
-                      <tr>
-                        <th width="30%">Roll</th>
-                        <td width="2%">:</td>
-                        <td>125</td>
-                      </tr>
-                      <tr>
-                        <th width="30%">Academic Year </th>
-                        <td width="2%">:</td>
-                        <td>2020</td>
-                      </tr>
-                      <tr>
-                        <th width="30%">Gender</th>
-                        <td width="2%">:</td>
-                        <td>Male</td>
-                      </tr>
-                      <tr>
-                        <th width="30%">Religion</th>
-                        <td width="2%">:</td>
-                        <td>Group</td>
-                      </tr>
-                      <tr>
-                        <th width="30%">blood</th>
-                        <td width="2%">:</td>
-                        <td>B+</td>
-                      </tr>
-                    </table>
+                  <Instruments value={profile}/>
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
         </div>

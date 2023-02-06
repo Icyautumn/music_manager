@@ -4,7 +4,9 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import tw from "twin.macro";
 import { GlobalFilter } from "../../components/globalFilter";
 import { useParams } from "react-router-dom";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+import AddInstrument from "./instrument/AddInstrument";
 import {
   Table,
   TableBody,
@@ -20,6 +22,7 @@ import {
   TablePagination,
   TableFooter,
   Button,
+  Modal,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,12 +31,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   TableContainer: {
-
     borderRadius: 15,
     margin: "10px 10px",
     textAlign: "center",
     justifyContent: "center",
-    maxWidth: 1300,
+    maxWidth: 1500,
   },
   tableHeaderCell: {
     fontWeight: "bold",
@@ -58,11 +60,14 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
   },
   TablePagination: {
-    width: 300
-  }
+    width: 300,
+  },
 }));
 
-export function Student(props) {
+export function Instruments({ value }) {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -77,26 +82,11 @@ export function Student(props) {
     setPage(0);
   };
 
-  const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
-  
+  const token =
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
+
   const [products, setProducts] = useState([]);
-  const musicSchoolId = useParams(); 
-
-  const fetchProducts = async () => {
-    const response = await axios
-      .get(`https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/students/${musicSchoolId.token}`,
-      {headers:{
-        Authorization: `Bearer ${token}`,  
-      }})
-      .catch((err) => console.log(err));
-
-    if (response) {
-      const products = response.data;
-
-      console.log("Products: ", products);
-      setProducts(products);
-    }
-  };
+  const musicSchoolId = useParams();
 
   const data = useMemo(
     () => [
@@ -168,35 +158,52 @@ export function Student(props) {
       products[0]
         ? Object.keys(products[0])
             .filter((key) => key !== "id")
+            .filter((key) => key !== "profile_picture")
+            .filter((key) => key !== "name")
+            .filter((key) => key !== "email")
+            .filter((key) => key !== "contact")
+            .filter((key) => key !== "date_joined")
+            .filter((key) => key !== "instrument_id")
+            .filter((key) => key !== "teacher_code")
             .map((key) => {
-              if (key === "date_joined")
+              if (key === "instrument_name")
                 return {
-                  Header: "date joined",
+                  Header: "name",
                   accessor: key,
-                  Cell: ({ value }) => (
-                    
-                    <span>{(new Date(value)).toLocaleDateString()}</span>
-                  ),
+                  Cell: ({ value }) => <span>{value}</span>,
                 };
-                if(key === "profile_picture" )
+              if (key === "end_date")
                 return {
-                  Header: "Picture",
+                  Header: "end date",
                   accessor: key,
-                  Cell: ({ value }) => (
-                    
-                    <Avatar className={classes.avatar} alt={value} src={value} />
-                  ),
+                  Cell: ({ value }) => <span>{value}</span>,
                 };
-                if(key === "Makeup_credits")
+
+              if (key === "start_date")
                 return {
-                  Header: "Makeup Lesson",
+                  Header: "start date",
                   accessor: key,
-                  Cell: ({ value }) => (
-                    
-                    <span>{value}</span>
-                  ),
+                  Cell: ({ value }) => <span>{value}</span>,
                 };
-                
+
+              if (key === "usual_time_start")
+                return {
+                  Header: "start time",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+              if (key === "usual_time_end")
+                return {
+                  Header: "end time",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+              if (key === "usual_lesson_day")
+                return {
+                  Header: "day",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
 
               return { Header: key, accessor: key };
             })
@@ -211,18 +218,18 @@ export function Student(props) {
         id: "Edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <Button onClick={() => 
-            // alert("Editing: "+ row.original.id)
-            navigate(`/Students/${musicSchoolId.token}/${row.original.id}`)
-          }>
+          <Button
+            onClick={() =>
+              // alert("Editing: "+ row.original.id)
+              navigate(`/Students/${musicSchoolId.token}/${row.original.id}`)
+            }
+          >
             Edit
           </Button>
         ),
       },
     ]);
   };
-
-  
 
   const tableInstance = useTable(
     {
@@ -231,7 +238,7 @@ export function Student(props) {
     },
     useGlobalFilter,
     tableHooks,
-    useSortBy,
+    useSortBy
   );
 
   const {
@@ -246,17 +253,37 @@ export function Student(props) {
   } = tableInstance;
 
   useEffect(() => {
-    fetchProducts();
+    setProducts(value);
   }, []);
 
   return (
     <Grid>
-      <GlobalFilter
-        preGlobalFilteredRows={preGlobalFilteredRows}
-        setGlobalFilter={setGlobalFilter}
-        globalFilter={state.globalFilter}
-        setPage = {setPage}
-      />
+      <Grid container item>
+        <Grid container spacing={2} mb={2}>
+          <Grid item xs={10}>
+            <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+              <GlobalFilter
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                setGlobalFilter={setGlobalFilter}
+                globalFilter={state.globalFilter}
+                setPage={setPage}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={2}>
+            <div style={{ marginTop: "23px" }} elevation={0}>
+              <Button
+                variant="contained"
+                endIcon={<AddIcon />}
+                onClick={handleOpen}
+              >
+                Add
+              </Button>
+            </div>
+          </Grid>
+        </Grid>
+      </Grid>
+
       <TableContainer component={Paper} className={classes.TableContainer}>
         <Table
           {...getTableProps()}
@@ -279,36 +306,46 @@ export function Student(props) {
             ))}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => {
-              prepareRow(row);
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, idx) => {
+                prepareRow(row);
 
-              return (
-                <TableRow
-                  {...row.getRowProps()}
-                >
-                  {row.cells.map((cell, idx) => (
-                    <TableCell {...cell.getCellProps()}>
-                      {cell.render("Cell")}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map((cell, idx) => (
+                      <TableCell {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
           </TableBody>
           <TableFooter>
             <TablePagination
-            rowsPerPageOptions={[5, 10, 15]}
-            count={rows.length}
-            className={classes.TablePagination}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}/>
-        </TableFooter>
+              rowsPerPageOptions={[5, 10, 15]}
+              count={rows.length}
+              className={classes.TablePagination}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </TableFooter>
         </Table>
       </TableContainer>
+      <Modal
+        style={{position: 'absolute', top: "15%", zIndex: 10}}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <AddInstrument />
+      </Modal>
     </Grid>
   );
 }
 
-export default Student;
+export default Instruments;

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import StyledTextField from "./components/StyledTextField";
 import "./Invoice.css";
 import axios from "axios";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 // import Table from "./components/Table";
 import { makeStyles } from "@material-ui/core/styles";
 import StyledTableContainer from "./components/StyledTableContainer";
@@ -16,6 +16,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Pdf from "react-to-pdf";
 import * as htmlToImage from "html-to-image";
+import { useParams } from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   addButton: {
@@ -83,9 +85,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Invoice() {
+  const urlParameters = useParams();
   const [showInvoice, setShowInvoice] = useState(false);
   const [hover, sethover] = useState(false);
   const [Notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [invoiceDate, setInvoiceDate] = React.useState(null);
   const [dueDateInvoice, setDueDateInvoice] = useState("");
@@ -100,22 +104,71 @@ function Invoice() {
   function handleChange(event) {
     setNotes(event.target.value);
   }
-
-  const [music_school_id, setMusic_school_id] = useState('') 
-
   useEffect(() => {
-    setMusic_school_id(localStorage.getItem("id"));
+    music_school_details();
     const newUUID = uuidv4();
     setUUID(newUUID);
-
   }, []);
+
+  const [schoolDetails, setSchoolDetails] = useState([]);
+  const [studentDetails, setStudentDetails] = useState([]);
+
+  const music_school_id = urlParameters.token;
+
+  const music_school_details = async () => {
+    console.log(urlParameters);
+    const response = await axios({
+      method: "GET",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/account/${urlParameters.token}`,
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+      setSchoolDetails(receiver);
+
+      setStudentDetails(receiver);
+      await student_details();
+      setLoading(false);
+    }
+  };
+
+  const student_details = async () => {
+    console.log(urlParameters);
+    const response = await axios({
+      method: "GET",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/account/student/${urlParameters.student_id}`,
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+      setStudentDetails(receiver);
+    }
+  };
 
   const ref = useRef();
 
-  const student_id = "asfdf123423234123"
+  const student_id = urlParameters.student_id;
   const payment = "not paid";
-  const [total, setTotal] = useState()
-  const [pdf, setPdf] = useState()
+  const [total, setTotal] = useState();
+  const [pdf, setPdf] = useState();
 
   const invoiceDetails = {
     routeKey: "POST /music_portal/invoice",
@@ -127,23 +180,22 @@ function Invoice() {
       date: { invoiceDate },
       payment: { payment },
       amount: { total },
-      due_date: {dueDateInvoice}
+      due_date: { dueDateInvoice },
     },
   };
 
   const getTotal = (total) => {
-    setTotal(total)
-  }
+    setTotal(total);
+  };
 
   const sendFile = async () => {
     const dataUrl = await htmlToImage.toPng(ref.current);
     const link = document.createElement("a");
     link.download = "invoice.png";
     link.href = dataUrl;
-    setPdf(dataUrl)
+    setPdf(dataUrl);
     console.log(dataUrl);
     link.click();
-
 
     const response = await axios({
       method: "post",
@@ -167,190 +219,204 @@ function Invoice() {
 
   const classes = useStyles();
   return (
-    <body style={{display: 'grid'}}>
-      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow display:flex">
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          ref={ref}
-          id="ref"
-          item
-          sx={{backgroundColor: "white"}}
-        >
-          <Grid container item>
-            <Grid container spacing={2} mb={2}>
-              <Grid item xs={6}>
-                <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-                  <StyledTextField
-                    root={classes.root}
-                    id="admin_name"
-                    label="admin name"
-                  />
-                  <StyledTextField
-                    root={classes.root}
-                    id="company_address"
-                    label="Company's Address"
-                  />
-                  <StyledTextField
-                    root={classes.root}
-                    id="zipcode"
-                    label="City, State Zip"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={6}>
-                <div sx={{ textAlign: "center" }} elevation={0}>
-                  <Typography variant="h2" gutterBottom>
-                    INVOICE
-                  </Typography>
-                </div>
-              </Grid>
-            </Grid>
+    <div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <body style={{ display: "grid", justifyContent: "center" }}>
+          <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-3xl bg-white rounded shadow display:flex">
+            <Box
+              component="form"
+              noValidate
+              autoComplete="off"
+              ref={ref}
+              id="ref"
+              item
+              sx={{ backgroundColor: "white" }}
+            >
+              <Grid container item>
+                <Grid container spacing={2} mb={2}>
+                  <Grid item xs={6}>
+                    <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                      <img
+                        src={schoolDetails[0].music_school_logo}
+                        alt={""}
+                        style={{ width: 100, height: 100 }}
+                      />
+                      <StyledTextField
+                        root={classes.root}
+                        id="admin_name"
+                        label="admin name"
+                      />
+                      <StyledTextField
+                        root={classes.root}
+                        id="company_address"
+                        label="Company's Address"
+                        default_value={schoolDetails[0].address}
+                      />
+                      <StyledTextField
+                        root={classes.root}
+                        id="zipcode"
+                        label="City, State Zip"
+                        default_value={schoolDetails[0].zipcode}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <div sx={{ textAlign: "center" }} elevation={0}>
+                      <Typography variant="h2" gutterBottom>
+                        INVOICE
+                      </Typography>
+                    </div>
+                  </Grid>
+                </Grid>
 
-            <Grid container spacing={2} mb={1}>
-              <Grid item xs={6}>
-                <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-                  <Typography sx={{ textAlign: "left" }}>
-                    <b>Bill To:</b>
-                  </Typography>
-                  <StyledTextField
-                    root={classes.root}
-                    id="client_name"
-                    label="Client's Name"
-                  />
-                  <StyledTextField
-                    root={classes.root}
-                    id="client_address"
-                    label="client's Address"
-                  />
-                  <StyledTextField
-                    root={classes.root}
-                    id="client_zipcode"
-                    label="client's Zipcode"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={6}>
-                <div>
-                  <TextField
-                    id="Invoice#"
-                    label="Invoice #"
-                    value={uuid}
-                    disabled
-                    fullWidth
-                    required
-                    variant="filled"
-                    size="small"
-                    className={classes.root}
-                    InputProps={{ disableUnderline: true }}
-                  />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="Invoice Date"
-                      value={invoiceDate}
-                      sx={{ backgroundColor: "white" }}
-                      onChange={(newValue) => {
-                        setInvoiceDate(newValue["$d"].getTime());
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          fullWidth
-                          size="small"
-                          variant="filled"
-                          className={classes.root}
-                          sx={{
-                            input: { backgroundColor: "white" },
-                            label: { backgroundColor: "white" },
+                <Grid container spacing={2} mb={1}>
+                  <Grid item xs={6}>
+                    <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                      <Typography sx={{ textAlign: "left" }}>
+                        <b>Bill To:</b>
+                      </Typography>
+                      <StyledTextField
+                        root={classes.root}
+                        id="client_name"
+                        label="Client's Name"
+                        default_value={studentDetails[0].name}
+                      />
+                      <StyledTextField
+                        root={classes.root}
+                        id="client_address"
+                        label="client's Address"
+                      />
+                      <StyledTextField
+                        root={classes.root}
+                        id="client_zipcode"
+                        label="client's Zipcode"
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <div>
+                      <TextField
+                        id="Invoice#"
+                        label="Invoice #"
+                        value={uuid}
+                        disabled
+                        fullWidth
+                        required
+                        variant="filled"
+                        size="small"
+                        className={classes.root}
+                        InputProps={{ disableUnderline: true }}
+                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="Invoice Date"
+                          value={invoiceDate}
+                          sx={{ backgroundColor: "white" }}
+                          onChange={(newValue) => {
+                            setInvoiceDate(newValue["$d"].getTime());
                           }}
-                          InputProps={{ disableUnderline: true }}
-                          {...params}
+                          renderInput={(params) => (
+                            <TextField
+                              fullWidth
+                              size="small"
+                              variant="filled"
+                              className={classes.root}
+                              sx={{
+                                input: { backgroundColor: "white" },
+                                label: { backgroundColor: "white" },
+                              }}
+                              InputProps={{ disableUnderline: true }}
+                              {...params}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="Due Date"
-                      value={dueDateInvoice}
-                      onChange={(newValue) => {
-                        setDueDateInvoice(newValue["$d"].getTime());
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          fullWidth
-                          size="small"
-                          variant="filled"
-                          className={classes.root}
-                          sx={{
-                            input: { backgroundColor: "white" },
-                            label: { backgroundColor: "white" },
+                      </LocalizationProvider>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="Due Date"
+                          value={dueDateInvoice}
+                          onChange={(newValue) => {
+                            setDueDateInvoice(newValue["$d"].getTime());
                           }}
-                          InputProps={{ disableUnderline: true }}
-                          {...params}
+                          renderInput={(params) => (
+                            <TextField
+                              fullWidth
+                              size="small"
+                              variant="filled"
+                              className={classes.root}
+                              sx={{
+                                input: { backgroundColor: "white" },
+                                label: { backgroundColor: "white" },
+                              }}
+                              InputProps={{ disableUnderline: true }}
+                              {...params}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </div>
-              </Grid>
-            </Grid>
-            <StyledTableContainer
-              tableRowStyle={classes.TableRow}
-              tableStyle={classes.table}
-              deleteButton={classes.deleteButton}
-              addItemButtonStyle={classes.addButton}
-              getTotal={getTotal}
-            />
+                      </LocalizationProvider>
+                    </div>
+                  </Grid>
+                </Grid>
+                <StyledTableContainer
+                  tableRowStyle={classes.TableRow}
+                  tableStyle={classes.table}
+                  deleteButton={classes.deleteButton}
+                  addItemButtonStyle={classes.addButton}
+                  getTotal={getTotal}
+                />
 
-            <Grid container spacing={2} mb={2} mt={2}>
-              <Grid item xs={12}>
-                <div elevation={0}>
-                  <TextField
-                    fullWidth
-                    id="Notes"
-                    label="Notes"
-                    variant="filled"
-                    size="small"
-                    multiline
-                    maxRows={4}
-                    className={classes.root}
-                    InputProps={{ disableUnderline: true }}
-                  />
-                </div>
-                <div elevation={0}>
-                  <TextField
-                    fullWidth
-                    id="Terms"
-                    label="Terms & Condition"
-                    variant="filled"
-                    size="small"
-                    multiline
-                    maxRows={4}
-                    className={classes.root}
-                    InputProps={{ disableUnderline: true }}
-                  />
-                </div>
+                <Grid container spacing={2} mb={2} mt={2}>
+                  <Grid item xs={12}>
+                    <div elevation={0}>
+                      <TextField
+                        fullWidth
+                        id="Notes"
+                        label="Notes"
+                        variant="filled"
+                        size="small"
+                        multiline
+                        maxRows={4}
+                        className={classes.root}
+                        InputProps={{ disableUnderline: true }}
+                      />
+                    </div>
+                    <div elevation={0}>
+                      <TextField
+                        fullWidth
+                        id="Terms"
+                        label="Terms & Condition"
+                        variant="filled"
+                        size="small"
+                        multiline
+                        maxRows={4}
+                        className={classes.root}
+                        InputProps={{ disableUnderline: true }}
+                      />
+                    </div>
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>
-          </Grid>
-        </Box>
+            </Box>
 
-        <button
-          onClick={sendFile}
-          className="mt-5 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300"
-        >
-          Send Invoice
-        </button>
-        <Pdf targetRef={ref} filename="document.pdf" onComplete>
-          {({ toPdf, onComplete }) => (
-            <button onClick={toPdf} className="button">
-              Generate PDF
+            <button
+              onClick={sendFile}
+              className="mt-5 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300"
+            >
+              Send Invoice
             </button>
-          )}
-        </Pdf>
-      </main>
-    </body>
+            <Pdf targetRef={ref} filename="document.pdf" onComplete>
+              {({ toPdf, onComplete }) => (
+                <button onClick={toPdf} className="button">
+                  Generate PDF
+                </button>
+              )}
+            </Pdf>
+          </main>
+        </body>
+      )}
+    </div>
   );
 }
 
