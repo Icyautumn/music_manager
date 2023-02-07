@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import AddInstrument from "./instrument/AddInstrument";
+import EditInstrument from "./instrument/EditInstrument";
 import {
   Table,
   TableBody,
@@ -65,9 +66,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function Instruments({ value }) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openEdit, setOpenEdit] = useState();
+  const handleOpenEdit = () => setOpenEdit(true);
+  const handleCloseEdit = () => setOpenEdit(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -86,7 +90,7 @@ export function Instruments({ value }) {
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
 
   const [products, setProducts] = useState([]);
-  const musicSchoolId = useParams();
+  const urlParameters = useParams();
 
   const data = useMemo(
     () => [
@@ -183,24 +187,43 @@ export function Instruments({ value }) {
                 return {
                   Header: "start date",
                   accessor: key,
-                  Cell: ({ value }) => <span>{value}</span>,
+                  Cell: ({ value }) => (
+                    <span>{new Date(value).toLocaleDateString()}</span>
+                  ),
                 };
 
               if (key === "usual_time_start")
                 return {
                   Header: "start time",
                   accessor: key,
-                  Cell: ({ value }) => <span>{value}</span>,
+                  Cell: ({ value }) => (
+                    <span>
+                      {new Date(value).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  ),
                 };
               if (key === "usual_time_end")
                 return {
                   Header: "end time",
                   accessor: key,
-                  Cell: ({ value }) => <span>{value}</span>,
+                  Cell: ({ value }) => <span> {new Date(value).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}</span>,
                 };
               if (key === "usual_lesson_day")
                 return {
                   Header: "day",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+
+                if (key === "duration")
+                return {
+                  Header: "duration (minutes)",
                   accessor: key,
                   Cell: ({ value }) => <span>{value}</span>,
                 };
@@ -219,10 +242,11 @@ export function Instruments({ value }) {
         Header: "Edit",
         Cell: ({ row }) => (
           <Button
-            onClick={() =>
-              // alert("Editing: "+ row.original.id)
-              navigate(`/Students/${musicSchoolId.token}/${row.original.id}`)
-            }
+            onClick={() => {
+              navigate(
+                `/students/edit_instrument/${urlParameters.token}/${urlParameters.student_id}/${row.original.instrument_id}`
+              );
+            }}
           >
             Edit
           </Button>
@@ -275,7 +299,9 @@ export function Instruments({ value }) {
               <Button
                 variant="contained"
                 endIcon={<AddIcon />}
-                onClick={handleOpen}
+                onClick={() => {
+                  navigate(`/students/add_Instrument/${urlParameters.token}/${urlParameters.student_id}`)
+                }}
               >
                 Add
               </Button>
@@ -336,13 +362,23 @@ export function Instruments({ value }) {
         </Table>
       </TableContainer>
       <Modal
-        style={{position: 'absolute', top: "15%", zIndex: 10}}
-        open={open}
-        onClose={handleClose}
+        style={{ position: "absolute", top: "15%", zIndex: 10 }}
+        open={openAdd}
+        onClose={handleCloseAdd}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <AddInstrument />
+      </Modal>
+
+      <Modal
+        style={{ position: "absolute", top: "15%", zIndex: 10 }}
+        open={openEdit}
+        onClose={handleCloseEdit}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <EditInstrument />
       </Modal>
     </Grid>
   );

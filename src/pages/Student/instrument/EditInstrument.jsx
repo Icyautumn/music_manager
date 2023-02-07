@@ -11,6 +11,7 @@ import {
   OutlinedInput,
   InputAdornment,
 } from "@material-ui/core";
+import moment from "moment/moment";
 import axios from "axios";
 import { Autocomplete, Button, Stack } from "@mui/material";
 import React, { useRef, useState, useEffect } from "react";
@@ -18,6 +19,7 @@ import { DatePicker, Space, TimePicker } from "antd";
 import { useParams } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close";
 import { height } from "@mui/system";
 import dayjs from "dayjs";
 import {useNavigate } from "react-router-dom";
@@ -41,8 +43,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AddInstrument() {
+function EditInstrument() {
   const navigate = useNavigate();
+  const dateFormattest = "DD-MM-YYYY";
+  const [endDate, setEndDate] = useState(null);
   const [teachers, SetTeachers] = useState();
   const urlParameters = useParams();
   const [loading, setLoading] = useState(true);
@@ -54,6 +58,7 @@ function AddInstrument() {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [duration, setDuration] = useState();
+  const [editInfo, setEditInfo] = useState();
   const Instruments = [
     { title: "Drums" },
     { title: "Piano" },
@@ -83,7 +88,61 @@ function AddInstrument() {
     { title: "Sunday" },
   ];
 
-  const addInstrument = async () => {
+  
+
+  const getInstrumentDetails = async () => {
+    const response = await axios({
+      method: "GET",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/instrument/${urlParameters.instrument_id}`,
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+      setEditInfo(receiver);
+      setInstrumentPicked(receiver[0].instrument_name);
+      setGradePicked(receiver[0].grade);
+      setFees(receiver[0].fees);
+      setStartDate(receiver[0].start_date);
+      setStartTime(receiver[0].usual_time_start);
+      setEndTime(receiver[0].usual_time_end);
+      setDay(receiver[0].usual_lesson_day);
+      setTeacherTeaching(receiver[0].teacher_code);
+      setDuration(receiver[0].duration);
+      setLoading(false);
+    }
+  };
+
+  const deleteInstrument = async () => {
+    const response = await axios({
+      method: "DELETE",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/instrument/user/${urlParameters.instrument_id}`,
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+      navigate(`/Students/${urlParameters.token}/${urlParameters.student_id}`)
+    }
+  }
+
+  const InstrumentEdit = async () => {
     const data = {
       instrument_name: instrumentPicked,
       grade: gradePicked,
@@ -93,17 +152,17 @@ function AddInstrument() {
       end_time: endTime,
       usual_lesson_day: day,
       teacher_id: teacherTeaching.id,
-      end_date: null,
+      end_date: endDate,
       student_code: urlParameters.student_id,
       music_school_id: urlParameters.token,
       duration: duration,
     };
 
-    console.log(data);
+    console.log("edit", data);
 
     const response = await axios({
-      method: "POST",
-      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/instrument/user/instrument`,
+      method: "PUT",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/instrument/user/${urlParameters.instrument_id}`,
       // headers: {
       //   Authorization: `Bearer ${token}`,
       // },
@@ -139,7 +198,7 @@ function AddInstrument() {
       const receiver = await response.data;
       console.log(receiver);
       SetTeachers(receiver);
-      setLoading(false);
+      getInstrumentDetails();
     }
   };
   const dateFormat = "YYYY/MM/DD";
@@ -151,23 +210,12 @@ function AddInstrument() {
   const timepicker = (time) => {
     console.log(time);
     console.log(time[0].$d);
-    console.log(time[0].valueOf());
-    console.log(time[1].valueOf());
-    console.log(
-      new Date(time[0].valueOf()).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
-    console.log(
-      new Date(time[1].valueOf()).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
-    setStartTime(time[0].valueOf());
+    console.log(time[0].$d.valueOf());
+    setStartTime(time[0].$d.valueOf());
 
-    setEndTime(time[1].valueOf());
+    console.log(time[1].$d);
+    console.log(time[1].$d.valueOf());
+    setEndTime(time[1].$d.valueOf());
 
     const start = time[0].$d.valueOf();
     const end = time[1].$d.valueOf();
@@ -176,14 +224,21 @@ function AddInstrument() {
   };
 
   const { RangePicker } = DatePicker;
-  const pickerdate = (value, dateString) => {
+  const pickerStartdate = (value, dateString) => {
     console.log("Selected Time: ", value);
     console.log("Formatted Selected Time: ", dateString);
   };
-  const onOk = (value) => {
-    console.log("onOk: ", new Date(value.valueOf()).toLocaleDateString());
+  const pickerEnddate = (value, dateString) => {
+    console.log("Selected Time: ", value);
+    console.log("Formatted Selected Time: ", dateString);
+  };
+  const onStartDate = (value) => {
     setStartDate(value.valueOf());
   };
+  const onEndDate = (value) => {
+    setEndDate(value.valueOf());
+  };
+
   const ref = useRef();
 
   useEffect(() => {
@@ -196,19 +251,20 @@ function AddInstrument() {
       ) : (
         <div
           className="container mt-3"
-          style={{ maxWidth: "550px", height: "520px" }}
+          style={{ maxWidth: "550px", height: "680px" }}
         >
           <div className="alert alert-danger mt-3" style={{ display: "none" }}>
             <ul id="alerts"></ul>
           </div>
           <div>
             <Typography variant="h3" style={{ textAlign: "center" }}>
-              Add Instrument
+              Edit Instrument
             </Typography>
 
             <Autocomplete
               id="instrument"
               freeSolo
+              value={instrumentPicked}
               options={Instruments.map((option) => option.title)}
               renderInput={(params) => (
                 <TextField
@@ -237,6 +293,7 @@ function AddInstrument() {
                     <Autocomplete
                       id="Grade"
                       freeSolo
+                      value={gradePicked}
                       options={Grade.map((option) => option.title)}
                       renderInput={(params) => (
                         <TextField
@@ -270,6 +327,7 @@ function AddInstrument() {
                       }
                       label="Fees per lesson"
                       labelStyle={{ visibility: "visible" }}
+                      defaultValue={editInfo[0].fees}
                       onBlur={(event) => setFees(parseInt(event.target.value))}
                     />
                   </Grid>
@@ -294,8 +352,12 @@ function AddInstrument() {
                     <DatePicker
                       size={"large"}
                       showTime
-                      onChange={pickerdate}
-                      onOk={onOk}
+                      onChange={pickerStartdate}
+                      onOk={onStartDate}
+                      defaultValue={dayjs(
+                        new Date(editInfo[0].start_date).toLocaleDateString(),
+                        "DD-MM-YYYY"
+                      )}
                       format={dateFormat}
                     />
                   </Grid>
@@ -311,7 +373,52 @@ function AddInstrument() {
                     <TimePicker.RangePicker
                       size={"large"}
                       format={format}
+                      defaultValue={[
+                        moment(
+                          new Date(
+                            editInfo[0].usual_time_start
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }),
+                          "hh : mm A"
+                        ),
+                        moment(
+                          new Date(
+                            editInfo[0].usual_time_end
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }),
+                          "hh : mm A"
+                        ),
+                      ]}
                       onChange={timepicker}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid container item>
+              <Grid
+                container
+                spacing={2}
+                style={{ marginTop: "20px", marginBottom: "20px" }}
+              >
+                <Grid item xs={6}>
+                  <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                    <label
+                      className="form-label"
+                      style={{ paddingRight: "20px" }}
+                    >
+                      End Date: (optional)
+                    </label>
+                    <DatePicker
+                      size={"large"}
+                      showTime
+                      onChange={pickerEnddate}
+                      onOk={onEndDate}
+                      format={dateFormat}
                     />
                   </Grid>
                 </Grid>
@@ -328,6 +435,8 @@ function AddInstrument() {
                   <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
                     <Autocomplete
                       id="Day"
+                      freeSolo
+                      value={editInfo[0].usual_lesson_day}
                       options={days.map((option) => option.title)}
                       renderInput={(params) => (
                         <TextField
@@ -344,10 +453,12 @@ function AddInstrument() {
                     />
                   </Grid>
                 </Grid>
+
                 <Grid item xs={6}>
                   <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
                     <Autocomplete
                       id="Teacher"
+                      freeSolo
                       options={teachers.map((option) => ({
                         name: option.name,
                         id: option.id,
@@ -370,14 +481,41 @@ function AddInstrument() {
                 </Grid>
               </Grid>
             </Grid>
-            <Button
-              variant="contained"
-              style={{ width: "100%" }}
-              endIcon={<SendIcon />}
-              onClick={addInstrument}
-            >
-              Add
-            </Button>
+            <Grid container item>
+              <Grid
+                container
+                spacing={2}
+                style={{ marginTop: "20px", marginBottom: "20px" }}
+              >
+                <Grid item xs={6}>
+                  <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                    <Button
+                      variant="contained"
+                      style={{ width: "100%" }}
+                      endIcon={<CloseIcon />}
+                      color="warning"
+                      onClick={deleteInstrument}
+                    >
+                      Delete
+                    </Button>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                    <Button
+                      variant="contained"
+                      style={{ width: "100%" }}
+                      endIcon={<SendIcon />}
+                      onClick={InstrumentEdit}
+                    >
+                      Edit
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+
             <br />
           </div>
         </div>
@@ -386,4 +524,4 @@ function AddInstrument() {
   );
 }
 
-export default AddInstrument;
+export default EditInstrument;

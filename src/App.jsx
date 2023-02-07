@@ -22,6 +22,7 @@ import Slider from "./pages/ToggleSwitch/Slider";
 import AllInvoice from "./pages/invoice/Read_invoice/AllInvoice";
 import Student_details from "./pages/Student/Student_details";
 import AddInstrument from "./pages/Student/instrument/AddInstrument";
+import EditInstrument from "./pages/Student/instrument/EditInstrument";
 
 const AppContainer = tw.div`
   w-full
@@ -77,6 +78,7 @@ function App() {
           <Route path="/avatar" element={[<Navbar />, <MTable />]} />
           <Route path="/students/:token/:student_id" element={[<Navbar />, <Student_details />]} />
           <Route path="/students/add_Instrument/:token/:student_id" element={[<Navbar />, <AddInstrument />]} />
+          <Route path="/students/edit_instrument/:token/:student_id/:instrument_id" element={[<Navbar />, <EditInstrument />]} />
         </Routes>
       </>
     </Router>

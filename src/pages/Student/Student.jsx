@@ -175,7 +175,7 @@ export function Student(props) {
                   accessor: key,
                   Cell: ({ value }) => (
                     
-                    <span>{(new Date(value)).toLocaleDateString()}</span>
+                    <span>{(new Date(parseFloat(value) * 1000)).toLocaleDateString()}</span>
                   ),
                 };
                 if(key === "profile_picture" )
