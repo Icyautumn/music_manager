@@ -180,7 +180,7 @@ export function Student(props) {
                   accessor: key,
                   Cell: ({ value }) => (
                     <span>
-                      {new Date(parseFloat(value) * 1000).toLocaleDateString()}
+                      {new Date(value).toLocaleDateString()}
                     </span>
                   ),
                 };

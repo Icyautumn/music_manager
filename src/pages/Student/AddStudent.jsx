@@ -53,6 +53,7 @@ function AddStudent() {
   const [contact, setContact] = useState();
   const [dateJoined, setDateJoined] = useState();
   const [studentCode, setStudentCode] = useState();
+  const [userNotExist, setUserNotExist] = useState(false);
 
   const studentAdd = async () => {
     const data = {
@@ -61,30 +62,80 @@ function AddStudent() {
       contact: contact,
       music_school_id: urlParameters.token,
       date_joined: dateJoined,
-      student_code: studentCode
+      student_code: studentCode,
     };
 
     console.log(data);
 
-    const response = await axios({
-      method: "POST",
-      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/user/${urlParameters.token}`,
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-      data: { data },
-    }).catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-        alert("student already exist");
+    if (userNotExist) {
+      const response = await axios({
+        method: "POST",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/reg-user`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        data: { data },
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          alert("student already exist");
+        }
+      });
+      if (response) {
+        const receiver = await response.data;
+        console.log(receiver)
+        const data = {
+          email: email,
+          name: name,
+          contact: contact,
+          music_school_id: urlParameters.token,
+          date_joined: dateJoined,
+          student_code: receiver,
+        };
+        const secondResponse = await axios({
+          method: "POST",
+          url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/user/${urlParameters.token}`,
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
+          data: { data },
+        }).catch(function (error) {
+          if (error.response) {
+            console.log(error.secondResponse.data);
+            console.log(error.secondResponse.status);
+            console.log(error.secondResponse.headers);
+            alert("student already exist");
+          }
+        });
+        if (secondResponse) {
+          const receiver = await secondResponse.data;
+          console.log(receiver);
+          navigate(`/Students/${urlParameters.token}`);
+        }
       }
-    });
-    if (response) {
-      const receiver = await response.data;
-      console.log(receiver);
-      navigate(`/Students/${urlParameters.token}`);
+    } else {
+      const response = await axios({
+        method: "POST",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/user/${urlParameters.token}`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        data: { data },
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          alert("student already exist");
+        }
+      });
+      if (response) {
+        const receiver = await response.data;
+        console.log(receiver);
+        navigate(`/Students/${urlParameters.token}`);
+      }
     }
   };
 
@@ -109,7 +160,9 @@ function AddStudent() {
       if (receiver.length !== 0) {
         setName(receiver[0].name);
         setContact(receiver[0].contact);
-        setStudentCode(receiver[0].id)
+        setStudentCode(receiver[0].id);
+      } else {
+        setUserNotExist(true);
       }
     }
   };
