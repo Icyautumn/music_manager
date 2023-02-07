@@ -277,7 +277,10 @@ export function Instruments({ value }) {
   } = tableInstance;
 
   useEffect(() => {
-    setProducts(value);
+    if(value[0].instrument_id !== null){
+      setProducts(value);
+    }
+    
   }, []);
 
   return (

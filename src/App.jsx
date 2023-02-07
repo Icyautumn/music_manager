@@ -23,6 +23,8 @@ import AllInvoice from "./pages/invoice/Read_invoice/AllInvoice";
 import Student_details from "./pages/Student/Student_details";
 import AddInstrument from "./pages/Student/instrument/AddInstrument";
 import EditInstrument from "./pages/Student/instrument/EditInstrument";
+import Teacher from "./pages/Teacher/Teacher";
+import AddStudent from "./pages/Student/AddStudent";
 
 const AppContainer = tw.div`
   w-full
@@ -61,9 +63,24 @@ function App() {
               </AppContainer>,
             ]}
           />
+          <Route
+            path="/teachers/:token"
+            element={[
+              <Navbar />,
+              <AppContainer>
+                <Teacher />
+              </AppContainer>,
+            ]}
+          />
           <Route path="/products/:token" element={[<Navbar />, <Student />]} />
-          <Route path="/view_invoice/:token/:student_id" element={[<Navbar />, <AllInvoice />]} />
-          <Route path="/invoice/:token/:student_id" element={[<Navbar />, <Invoice />]} />
+          <Route
+            path="/view_invoice/:token/:student_id"
+            element={[<Navbar />, <AllInvoice />]}
+          />
+          <Route
+            path="/invoice/:token/:student_id"
+            element={[<Navbar />, <Invoice />]}
+          />
 
           <Route
             path="/"
@@ -71,14 +88,28 @@ function App() {
               <Account>
                 <Status />
                 <Slider />
-              </Account>
+              </Account>,
             ]}
           />
           <Route path="/Calendar/:token" element={[<Navbar />, <Calendar />]} />
           <Route path="/avatar" element={[<Navbar />, <MTable />]} />
-          <Route path="/students/:token/:student_id" element={[<Navbar />, <Student_details />]} />
-          <Route path="/students/add_Instrument/:token/:student_id" element={[<Navbar />, <AddInstrument />]} />
-          <Route path="/students/edit_instrument/:token/:student_id/:instrument_id" element={[<Navbar />, <EditInstrument />]} />
+          <Route
+            path="/students/:token/:student_id"
+            element={[<Navbar />, <Student_details />]}
+          />
+          <Route
+            path="/students/add_Instrument/:token/:student_id"
+            element={[<Navbar />, <AddInstrument />]}
+          />
+          <Route
+            path="/students/reg-student/:token"
+            element={[<Navbar />, <AddStudent />]}
+          />
+          <Route
+            path="/students/edit_instrument/:token/:student_id/:instrument_id"
+            element={[<Navbar />, <EditInstrument />]}
+          />
+          
         </Routes>
       </>
     </Router>

@@ -4,8 +4,7 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import tw from "twin.macro";
 import { GlobalFilter } from "../../components/globalFilter";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
+import {useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -29,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   TableContainer: {
+
     borderRadius: 15,
     margin: "10px 10px",
     textAlign: "center",
@@ -58,11 +58,11 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
   },
   TablePagination: {
-    width: 300,
-  },
+    width: 300
+  }
 }));
 
-export function Student(props) {
+export function Teacher(props) {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -77,24 +77,25 @@ export function Student(props) {
     setPage(0);
   };
 
-  const token =
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
-
+  const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
+  
   const [products, setProducts] = useState([]);
-  const musicSchoolId = useParams();
+  const urlParameters = useParams(); 
 
   const fetchProducts = async () => {
-    const response = await axios
-      .get(
-        `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/students/${musicSchoolId.token}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .catch((err) => console.log(err));
-
+    const response = await axios({
+      method: "GET",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/teachers/${urlParameters.token}`,
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
     if (response) {
       const products = response.data;
 
@@ -179,29 +180,29 @@ export function Student(props) {
                   Header: "date joined",
                   accessor: key,
                   Cell: ({ value }) => (
-                    <span>
-                      {new Date(parseFloat(value) * 1000).toLocaleDateString()}
-                    </span>
+                    
+                    <span>{(new Date(parseFloat(value) * 1000)).toLocaleDateString()}</span>
                   ),
                 };
-              if (key === "profile_picture")
+                if(key === "profile_picture" )
                 return {
                   Header: "Picture",
                   accessor: key,
                   Cell: ({ value }) => (
-                    <Avatar
-                      className={classes.avatar}
-                      alt={value}
-                      src={value}
-                    />
+                    
+                    <Avatar className={classes.avatar} alt={value} src={value} />
                   ),
                 };
-              if (key === "Makeup_credits")
+                if(key === "Makeup_credits")
                 return {
                   Header: "Makeup Lesson",
                   accessor: key,
-                  Cell: ({ value }) => <span>{value}</span>,
+                  Cell: ({ value }) => (
+                    
+                    <span>{value}</span>
+                  ),
                 };
+                
 
               return { Header: key, accessor: key };
             })
@@ -216,18 +217,18 @@ export function Student(props) {
         id: "Edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <Button
-            onClick={() =>
-              // alert("Editing: "+ row.original.id)
-              navigate(`/Students/${musicSchoolId.token}/${row.original.id}`)
-            }
-          >
+          <Button onClick={() => 
+            // alert("Editing: "+ row.original.id)
+            navigate(`/Students/${urlParameters.token}/${row.original.id}`)
+          }>
             Edit
           </Button>
         ),
       },
     ]);
   };
+
+  
 
   const tableInstance = useTable(
     {
@@ -236,7 +237,7 @@ export function Student(props) {
     },
     useGlobalFilter,
     tableHooks,
-    useSortBy
+    useSortBy,
   );
 
   const {
@@ -256,34 +257,12 @@ export function Student(props) {
 
   return (
     <Grid>
-      <Grid container item>
-        <Grid container spacing={2} mb={2}>
-          <Grid item xs={10}>
-            <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                setGlobalFilter={setGlobalFilter}
-                globalFilter={state.globalFilter}
-                setPage={setPage}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={2}>
-            <div style={{ marginTop: "23px" }} elevation={0}>
-              <Button
-                variant="contained"
-                endIcon={<AddIcon />}
-                onClick={() => {
-                  navigate(`/students/reg-student/${musicSchoolId.token}`);
-                }}
-              >
-                Add
-              </Button>
-            </div>
-          </Grid>
-        </Grid>
-      </Grid>
-
+      <GlobalFilter
+        preGlobalFilteredRows={preGlobalFilteredRows}
+        setGlobalFilter={setGlobalFilter}
+        globalFilter={state.globalFilter}
+        setPage = {setPage}
+      />
       <TableContainer component={Paper} className={classes.TableContainer}>
         <Table
           {...getTableProps()}
@@ -306,37 +285,36 @@ export function Student(props) {
             ))}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, idx) => {
-                prepareRow(row);
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => {
+              prepareRow(row);
 
-                return (
-                  <TableRow {...row.getRowProps()}>
-                    {row.cells.map((cell, idx) => (
-                      <TableCell {...cell.getCellProps()}>
-                        {cell.render("Cell")}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })}
+              return (
+                <TableRow
+                  {...row.getRowProps()}
+                >
+                  {row.cells.map((cell, idx) => (
+                    <TableCell {...cell.getCellProps()}>
+                      {cell.render("Cell")}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 15]}
-              count={rows.length}
-              className={classes.TablePagination}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-          </TableFooter>
+            rowsPerPageOptions={[5, 10, 15]}
+            count={rows.length}
+            className={classes.TablePagination}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}/>
+        </TableFooter>
         </Table>
       </TableContainer>
     </Grid>
   );
 }
 
-export default Student;
+export default Teacher;
