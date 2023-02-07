@@ -8,6 +8,8 @@ import {
   Select,
   TextField,
   makeStyles,
+  OutlinedInput,
+  InputAdornment,
 } from "@material-ui/core";
 import axios from "axios";
 import { Autocomplete, Button, Stack } from "@mui/material";
@@ -17,6 +19,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 import SendIcon from "@mui/icons-material/Send";
 import { height } from "@mui/system";
+import dayjs from "dayjs";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +45,13 @@ function AddInstrument() {
   const urlParameters = useParams();
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
+  const [day, setDay] = useState();
+  const [teacherTeaching, setTeacherTeaching] = useState();
+  const [fees, setFees] = useState();
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
+  const [duration, setDuration] = useState();
   const Instruments = [
     { title: "Drums" },
     { title: "Piano" },
@@ -71,7 +81,42 @@ function AddInstrument() {
     { title: "Sunday" },
   ];
 
-  const addInstrument = async () => {};
+  const addInstrument = async () => {
+    const data = {
+      instrument_name: instrumentPicked,
+      grade: gradePicked,
+      fees: fees,
+      start_date: startDate,
+      start_time: startTime,
+      end_time: endTime,
+      usual_lesson_day: day,
+      teacher_id: teacherTeaching.id,
+      end_date: null,
+      student_code: urlParameters.student_id,
+      music_school_id: urlParameters.token,
+      duration: duration,
+    };
+
+    const response = await axios({
+        method: "POST",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/instrument/user/instrument`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        data: { data },
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
+      });
+      if (response) {
+        const receiver = await response.data;
+        console.log(receiver);
+      }
+    
+  };
   const getTeachers = async () => {
     const response = await axios({
       method: "GET",
@@ -97,20 +142,25 @@ function AddInstrument() {
   const [instrumentPicked, setInstrumentPicked] = useState("");
   const [gradePicked, setGradePicked] = useState("");
 
-  const format = "HH:mm";
+  const format = "HH:mm a";
 
   const timepicker = (time) => {
     console.log(time);
     console.log(time[0].$d);
-    console.log(time[0].$d.toLocaleTimeString());
+    console.log(time[0].$d.valueOf());
+    setStartTime(time[0].$d.valueOf());
 
     console.log(time[1].$d);
-    console.log(time[1].$d.toLocaleTimeString());
+    console.log(time[1].$d.valueOf());
+    setEndTime(time[1].$d.valueOf());
 
-    //console.log(daySelected)
+    const start = time[0].$d.valueOf();
+    const end = time[1].$d.valueOf()
+
+    setDuration(
+        dayjs(end).diff(dayjs(start), 'minute')
+    );
   };
-  //setStartTime((time[0].$d).toLocaleTimeString())
-  //setEndTime((time[1].$d).toLocaleTimeString())
 
   const { RangePicker } = DatePicker;
   const pickerdate = (value, dateString) => {
@@ -119,6 +169,7 @@ function AddInstrument() {
   };
   const onOk = (value) => {
     console.log("onOk: ", value);
+    setStartDate(value.$d.valueOf());
   };
   const ref = useRef();
 
@@ -132,7 +183,7 @@ function AddInstrument() {
       ) : (
         <div
           className="container mt-3"
-          style={{ maxWidth: "550px", height: "450px" }}
+          style={{ maxWidth: "550px", height: "520px" }}
         >
           <div className="alert alert-danger mt-3" style={{ display: "none" }}>
             <ul id="alerts"></ul>
@@ -148,6 +199,7 @@ function AddInstrument() {
               options={Instruments.map((option) => option.title)}
               renderInput={(params) => (
                 <TextField
+                  style={{ paddingLeft: "10px", paddingRight: "10px" }}
                   {...params}
                   label="Instrument"
                   variant="filled"
@@ -161,24 +213,57 @@ function AddInstrument() {
                 />
               )}
             />
-            <Autocomplete
-              id="Grade"
-              freeSolo
-              options={Grade.map((option) => option.title)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Grade"
-                  variant="filled"
-                  fullWidth
-                  required
-                  size="large"
-                  className={classes.root}
-                  value={gradePicked}
-                  onBlur={(event) => setGradePicked(event.target.value)}
-                />
-              )}
-            />
+            <Grid container item>
+              <Grid
+                container
+                spacing={2}
+                style={{ marginTop: "20px", marginBottom: "20px" }}
+              >
+                <Grid item xs={6}>
+                  <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+                    <Autocomplete
+                      id="Grade"
+                      freeSolo
+                      options={Grade.map((option) => option.title)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Grade"
+                          variant="filled"
+                          fullWidth
+                          required
+                          size="large"
+                          className={classes.root}
+                          value={gradePicked}
+                          onBlur={(event) => setGradePicked(event.target.value)}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item xs={6}>
+                  <Grid
+                    style={{
+                      paddingLeft: "10px",
+                      paddingRight: "10px",
+                      visibility: "visible",
+                    }}
+                  >
+                    <OutlinedInput
+                      style={{ color: "black", visibility: "visible" }}
+                      id="outlined-adornment-amount"
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                      label="Fees per lesson"
+                      labelStyle={{ visibility: "visible" }}
+                      onBlur={(event) => setFees(parseInt(event.target.value))}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+
             <Grid container item>
               <Grid
                 container
@@ -240,6 +325,7 @@ function AddInstrument() {
                           required
                           size="large"
                           className={classes.root}
+                          onBlur={(event) => setDay(event.target.value)}
                         />
                       )}
                     />
@@ -249,7 +335,12 @@ function AddInstrument() {
                   <Grid style={{ paddingLeft: "10px", paddingRight: "10px" }}>
                     <Autocomplete
                       id="Teacher"
-                      options={teachers.map((option) => option.name)}
+                      options={teachers.map((option) => ({
+                        name: option.name,
+                        id: option.id,
+                      }))}
+                      getOptionLabel={(option) => option.name}
+                      onChange={(event, value) => setTeacherTeaching(value)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
