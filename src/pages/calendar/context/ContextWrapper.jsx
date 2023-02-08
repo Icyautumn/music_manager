@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer, useMemo } from "react";
 import GlobalContext from "./GlobalContext";
 import dayjs from "dayjs";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function savedEventsReducer(state, { type, payload }) {
   switch (type) {
@@ -22,6 +23,7 @@ function initEvents() {
 }
 
 export default function ContextWrapper(props) {
+  const urlParameters = useParams();
   const [monthIndex, setMonthIndex] = useState(dayjs().month());
   const [smallCalendarMonth, setSmallCalendarMonth] = useState(null);
   const [daySelected, setDaySelected] = useState(dayjs());
@@ -46,7 +48,7 @@ export default function ContextWrapper(props) {
   const getLesson = async () => {
     const response = await axios({
       method: "GET",
-      url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/{music_school_id} ",
+      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/${localStorage.getItem("id")}`,
       // headers: {
       //   Authorization: `Bearer ${token}`,
       // },

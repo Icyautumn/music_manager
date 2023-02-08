@@ -98,7 +98,7 @@ export function AllInvoice(props) {
     console.log(urlParameters.token)
     console.log(urlParameters.student_id)
     const response = await axios({
-      method: "GET",
+      method: "POST",
       url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/invoice/${urlParameters.token}/${urlParameters.student_id}`,
     }).catch(function (error) {
       if (error.response) {
@@ -134,6 +134,8 @@ export function AllInvoice(props) {
             //   (key) => key !== "description")
             .filter((key) => key !== "id")
             .filter((key) => key !== "music_school_id")
+            .filter((key) => key !== "student_id")
+
             //   .filter((key) => key !== "id")
 
             .map((key) => {
@@ -152,18 +154,29 @@ export function AllInvoice(props) {
                     <button onClick={() => downloadPdf(value)}>Download</button>
                   ),
                 };
+
+                if (key === "amount")
+                return {
+                  Header: key,
+                  accessor: key,
+                  Cell: ({ value }) => (
+                    <p>${value}</p>
+                  ),
+                };
+
               if (key === "date")
                 return {
                   Header: key,
                   accessor: key,
                   Cell: ({ value }) => (
-                    //         <img
-                    //           src={value}
-                    //           style={{
-                    //             width: 50,
-                    //             height: 50,
-                    //           }}
-                    //         />
+                    <p>{new Date(value).toLocaleDateString()}</p>
+                  ),
+                };
+                if (key === "due_date")
+                return {
+                  Header: "due date",
+                  accessor: key,
+                  Cell: ({ value }) => (
                     <p>{new Date(value).toLocaleDateString()}</p>
                   ),
                 };
@@ -215,7 +228,7 @@ export function AllInvoice(props) {
   
 
   return (
-    <Grid>
+    <Grid style={{ display: "grid", justifyContent: "center" }}>
       <GlobalFilter
         preGlobalFilteredRows={preGlobalFilteredRows}
         setGlobalFilter={setGlobalFilter}

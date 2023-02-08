@@ -4,7 +4,7 @@ import { useGlobalFilter, useSortBy, useTable } from "react-table";
 import tw from "twin.macro";
 import { GlobalFilter } from "../../components/globalFilter";
 import { useParams } from "react-router-dom";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Table,
@@ -21,6 +21,7 @@ import {
   TablePagination,
   TableFooter,
   Button,
+  Modal,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,12 +30,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   TableContainer: {
-
     borderRadius: 15,
     margin: "10px 10px",
     textAlign: "center",
     justifyContent: "center",
-    maxWidth: 1300,
+    maxWidth: 1500,
   },
   tableHeaderCell: {
     fontWeight: "bold",
@@ -59,11 +59,17 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
   },
   TablePagination: {
-    width: 300
-  }
+    width: 300,
+  },
 }));
 
-export function Teacher(props) {
+export function Lessons({ value }) {
+  const [openEdit, setOpenEdit] = useState();
+  const handleOpenEdit = () => setOpenEdit(true);
+  const handleCloseEdit = () => setOpenEdit(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -82,27 +88,7 @@ export function Teacher(props) {
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlUWpNZjlteWV3N3BmcXZUQ2FBQiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zMXFibXIxbXJxaXhmZXBmLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJKdkp3ZEc4bmdySVZHbVdtdTc1bGZQc20zTVNnb2JwVEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly8xZWFod3B4YXFjLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjczMjM2MTUwLCJleHAiOjE2NzMzMjI1NTAsImF6cCI6Ikp2SndkRzhuZ3JJVkdtV211NzVsZlBzbTNNU2dvYnBUIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.soE0SukJLR7rZm_SsMKApbHeDxLy9sEk0sj41L-ovX-yEfIGMEwtVJozM4AbrnBw7t91yl2j6ITYbAjbxC77RZW7LX47wD0zMc-NUd9hslZtyPSZVN7moqPymGThHMzs8841_ksdeFgqkPyu1djQX2XkhruWhfNa9AfWlalUzbfO2C-zuHvdnmZuakKpxs5jc2Dzqx48N_tdzolV-vSOEWyfUBWjUpmUj8g_hAkmRltv_4AZKf3pTpijZOtx6KXQEZXqxmv2FTafxPpOEXYZSgKYbXaw9bhdoXH2vJaV7U0h0yP4PA8wPLeEaSe5hMfXAIukpmO3VF506hRdtr2Uhw";
 
   const [products, setProducts] = useState([]);
-  const musicSchoolId = useParams();
-
-  const fetchProducts = async () => {
-    const response = await axios
-      .get(
-        `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/teachers/${musicSchoolId.token}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .catch((err) => console.log(err));
-
-    if (response) {
-      const products = response.data;
-
-      console.log("Products: ", products);
-      setProducts(products);
-    }
-  };
+  const urlParameters = useParams();
 
   const data = useMemo(
     () => [
@@ -174,32 +160,69 @@ export function Teacher(props) {
       products[0]
         ? Object.keys(products[0])
             .filter((key) => key !== "id")
+            .filter((key) => key !== "profile_picture")
+            .filter((key) => key !== "name")
+            .filter((key) => key !== "email")
+            .filter((key) => key !== "contact")
+            .filter((key) => key !== "date_joined")
+            .filter((key) => key !== "instrument_id")
+            .filter((key) => key !== "teacher_code")
+            .filter((key) => key !== "student_code")
             .map((key) => {
-              if (key === "date_joined")
+              if (key === "instrument_name")
                 return {
-                  Header: "date joined",
+                  Header: "name",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+              if (key === "end_date")
+                return {
+                  Header: "end date",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+
+              if (key === "start_date")
+                return {
+                  Header: "start date",
+                  accessor: key,
+                  Cell: ({ value }) => (
+                    <span>{new Date(value).toLocaleDateString()}</span>
+                  ),
+                };
+
+              if (key === "usual_time_start")
+                return {
+                  Header: "start time",
                   accessor: key,
                   Cell: ({ value }) => (
                     <span>
-                      {new Date(value).toLocaleDateString()}
+                      {new Date(value).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   ),
                 };
-              if (key === "profile_picture")
+              if (key === "usual_time_end")
                 return {
-                  Header: "Picture",
+                  Header: "end time",
                   accessor: key,
-                  Cell: ({ value }) => (
-                    <Avatar
-                      className={classes.avatar}
-                      alt={value}
-                      src={value}
-                    />
-                  ),
+                  Cell: ({ value }) => <span> {new Date(value).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}</span>,
                 };
-              if (key === "Makeup_credits")
+              if (key === "usual_lesson_day")
                 return {
-                  Header: "Makeup Lesson",
+                  Header: "day",
+                  accessor: key,
+                  Cell: ({ value }) => <span>{value}</span>,
+                };
+
+                if (key === "duration")
+                return {
+                  Header: "duration (minutes)",
                   accessor: key,
                   Cell: ({ value }) => <span>{value}</span>,
                 };
@@ -210,25 +233,26 @@ export function Teacher(props) {
     [products]
   );
 
-  const tableHooks = (hooks) => {
-    hooks.visibleColumns.push((columns) => [
-      ...columns,
-      {
-        id: "Edit",
-        Header: "Edit",
-        Cell: ({ row }) => (
-          <Button
-            onClick={() =>
-              // alert("Editing: "+ row.original.id)
-              navigate(`/teachers/${musicSchoolId.token}/${row.original.id}`)
-            }
-          >
-            Edit
-          </Button>
-        ),
-      },
-    ]);
-  };
+  // const tableHooks = (hooks) => {
+  //   hooks.visibleColumns.push((columns) => [
+  //     ...columns,
+  //     {
+  //       id: "Edit",
+  //       Header: "Edit",
+  //       Cell: ({ row }) => (
+  //         <Button
+  //           onClick={() => {
+  //             navigate(
+  //               `/students/edit_instrument/${urlParameters.token}/${urlParameters.student_id}/${row.original.instrument_id}`
+  //             );
+  //           }}
+  //         >
+  //           Edit
+  //         </Button>
+  //       ),
+  //     },
+  //   ]);
+  // };
 
   const tableInstance = useTable(
     {
@@ -236,7 +260,6 @@ export function Teacher(props) {
       data: productsData,
     },
     useGlobalFilter,
-    tableHooks,
     useSortBy
   );
 
@@ -252,7 +275,10 @@ export function Teacher(props) {
   } = tableInstance;
 
   useEffect(() => {
-    fetchProducts();
+    if(value[0].instrument_id !== null){
+      setProducts(value);
+    }
+    
   }, []);
 
   return (
@@ -271,15 +297,15 @@ export function Teacher(props) {
           </Grid>
           <Grid item xs={2}>
             <div style={{ marginTop: "23px" }} elevation={0}>
-              <Button
+              {/* <Button
                 variant="contained"
                 endIcon={<AddIcon />}
                 onClick={() => {
-                  navigate(`/students/reg-teacher/${musicSchoolId.token}`);
+                  navigate(`/students/add_Instrument/${urlParameters.token}/${urlParameters.student_id}`)
                 }}
               >
                 Add
-              </Button>
+              </Button> */}
             </div>
           </Grid>
         </Grid>
@@ -340,4 +366,4 @@ export function Teacher(props) {
   );
 }
 
-export default Teacher;
+export default Lessons;

@@ -18,7 +18,7 @@ import Pdf from "react-to-pdf";
 import * as htmlToImage from "html-to-image";
 import { useParams } from "react-router-dom";
 import Loading from "../Loading/Loading";
-
+import {useNavigate } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   addButton: {
     "&:hover": {
@@ -90,6 +90,7 @@ function Invoice() {
   const [hover, sethover] = useState(false);
   const [Notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const [invoiceDate, setInvoiceDate] = React.useState(null);
   const [dueDateInvoice, setDueDateInvoice] = useState("");
@@ -170,20 +171,6 @@ function Invoice() {
   const [total, setTotal] = useState();
   const [pdf, setPdf] = useState();
 
-  const invoiceDetails = {
-    routeKey: "POST /music_portal/invoice",
-    parameters: {
-      id: { uuid },
-      student_id: { student_id },
-      music_school_id: { music_school_id },
-      Invoice: { pdf },
-      date: { invoiceDate },
-      payment: { payment },
-      amount: { total },
-      due_date: { dueDateInvoice },
-    },
-  };
-
   const getTotal = (total) => {
     setTotal(total);
   };
@@ -196,6 +183,20 @@ function Invoice() {
     setPdf(dataUrl);
     console.log(dataUrl);
     link.click();
+
+    const invoiceDetails = {
+      routeKey: "POST /music_portal/invoice",
+      parameters: {
+        id: uuid,
+        student_id: student_id,
+        music_school_id: music_school_id,
+        Invoice: dataUrl,
+        date: invoiceDate,
+        payment: payment,
+        amount: total,
+        due_date: dueDateInvoice,
+      },
+    };
 
     const response = await axios({
       method: "post",
@@ -214,6 +215,7 @@ function Invoice() {
     if (response) {
       const receiver = await response.data;
       console.log(receiver);
+      navigate(`/Students/${urlParameters.token}/${urlParameters.student_id}`)
     }
   };
 
@@ -406,13 +408,6 @@ function Invoice() {
             >
               Send Invoice
             </button>
-            <Pdf targetRef={ref} filename="document.pdf" onComplete>
-              {({ toPdf, onComplete }) => (
-                <button onClick={toPdf} className="button">
-                  Generate PDF
-                </button>
-              )}
-            </Pdf>
           </main>
         </body>
       )}
