@@ -32,8 +32,7 @@ function Login_page() {
     handleClick()
   };
   const [SignUp, SetSignup] = useState(true);
-
-  const { authenticate } = useContext(AccountContext);
+  const { authenticate, getSession } = useContext(AccountContext);
   const [code, setCode] = useState("");
 
   const handleClick = (e) => {
@@ -132,6 +131,13 @@ function Login_page() {
       Pool,
     });
   };
+
+  const getPasswordForgot = () =>{
+    return new CognitoUser({
+      Username: forgotEmail,
+      Pool
+    })
+  }
   const Verify = (e) => {
     e.preventDefault()
     return new Promise((resolve, reject) => {
@@ -166,7 +172,22 @@ function Login_page() {
 
     authenticate(email, password)
       .then((data) => {
-        console.log("Logged in!", data);
+        getSession().then((data) => {
+          // gets the uid of the user
+          console.log(data['nickname'])
+          localStorage.setItem("id", data['nickname'])
+          localStorage.setItem("profile", data["profile"])
+          // check if user has verified email
+          console.log(data['email_verified'])
+          if(data["profile"] === "MusicSchool"){
+            navigate(`/students/${data['nickname']}`)
+          }
+          else{
+            navigate(`/calendar/${data['nickname']}`)
+          }
+          
+
+        });
       })
       .catch((err) => {
         console.error("Failed to login", err);
@@ -200,9 +221,12 @@ function Login_page() {
 
   const ChangePassword = (e) => {
     e.preventDefault();
-    getUser().confirmPassword(code, newPassword, {
+    console.log(newPassword)
+    console.log(forgotEmail)
+    getPasswordForgot().confirmPassword(code, newPassword, {
       onSuccess: (data) => {
         console.log("onSucess:", data);
+        SetSignupStage(false)
       },
       onFailure: (err) => {
         console.error("onFailure:", err);
@@ -235,20 +259,6 @@ function Login_page() {
           ) : (
             <form className="formLogin">
               <h1>Create Account</h1>
-              <div className="social-container">
-                <a onClick="" className="social">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-                <a onClick="" className="social">
-                  <i className="fab fa-google-plus-g"></i>
-                </a>
-                <a onClick="" className="social">
-                  <i className="fab fa-linkedin-in"></i>
-                </a>
-              </div>
-              <span className="spanLogin">
-                or use your email for registration
-              </span>
               <input
                 className="InputLogin"
                 type="text"
@@ -310,18 +320,6 @@ function Login_page() {
           ) : (
             <form className="formLogin">
             <h1>Sign in</h1>
-            <div className="social-container">
-              <a onClick="" className="social">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a onClick="" className="social">
-                <i className="fab fa-google-plus-g"></i>
-              </a>
-              <a onClick="" className="social">
-                <i className="fab fa-linkedin-in"></i>
-              </a>
-            </div>
-            <span className="spanLogin">or use your account</span>
             <input
               className="InputLogin"
               type="email"
