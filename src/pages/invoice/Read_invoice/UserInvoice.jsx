@@ -92,9 +92,9 @@ export function UserInvoice(props) {
       parameters: {
         amount: amount * 100,
         invoice_id: invoice_id,
-        user_id: urlParameters.token
+        user_id: urlParameters.token,
       },
-    }
+    };
 
     const response = await axios({
       method: "POST",
@@ -102,7 +102,7 @@ export function UserInvoice(props) {
       // headers: {
       //   Authorization: `Bearer ${token}`,
       // },
-      data: { totalAmount }
+      data: { totalAmount },
     }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -113,14 +113,14 @@ export function UserInvoice(props) {
     if (response) {
       const receiver = await response.data;
       console.log(receiver);
-      window.location= receiver
+      window.location = receiver;
     }
   };
 
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
   const fetchProducts = async () => {
-    console.log(urlParameters.token)
-    console.log(urlParameters.student_id)
+    console.log(urlParameters.token);
+    console.log(urlParameters.student_id);
     const response = await axios({
       method: "POST",
       url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/invoice/${urlParameters.token}`,
@@ -179,13 +179,11 @@ export function UserInvoice(props) {
                   ),
                 };
 
-                if (key === "amount")
+              if (key === "amount")
                 return {
                   Header: key,
                   accessor: key,
-                  Cell: ({ value }) => (
-                    <span>${value}</span>
-                  ),
+                  Cell: ({ value }) => <span>${value}</span>,
                 };
 
               if (key === "date")
@@ -196,7 +194,7 @@ export function UserInvoice(props) {
                     <span>{new Date(value).toLocaleDateString()}</span>
                   ),
                 };
-                if (key === "due_date")
+              if (key === "due_date")
                 return {
                   Header: "due date",
                   accessor: key,
@@ -217,11 +215,12 @@ export function UserInvoice(props) {
       {
         id: "Pay",
         Header: "Pay",
-        Cell: ({ row }) => (
-          <Button onClick={() => payment(row.values.amount, row.original.id) }>
-            Pay
-          </Button>
-        ),
+        Cell: ({ row }) =>
+          row.values.payment === "paid" ? null : (
+            <Button onClick={() => payment(row.values.amount, row.original.id)}>
+              Pay
+            </Button>
+          ),
       },
     ]);
   };
@@ -248,8 +247,6 @@ export function UserInvoice(props) {
     setGlobalFilter,
     state,
   } = tableInstance;
-
-  
 
   return (
     <Grid style={{ display: "grid", justifyContent: "center" }}>
