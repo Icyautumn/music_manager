@@ -187,9 +187,16 @@ function Login_page_MusicSchool() {
           // gets the uid of the user
           console.log(data['nickname'])
           localStorage.setItem("id", data['nickname'])
+          localStorage.setItem("profile", data["profile"])
           // check if user has verified email
           console.log(data['email_verified'])
-          navigate(`/home/${data['nickname']}`)
+          if(data["profile"] === "MusicSchool"){
+            navigate(`/students/${data['nickname']}`)
+          }
+          else{
+            navigate(`/calendar/${data['nickname']}`)
+          }
+          
 
         });
       })

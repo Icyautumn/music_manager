@@ -5,7 +5,7 @@ import * as IoIcons from 'react-icons/io';
 
 
 
-export const SidebarData = [
+export const userNavbar = [
   {
     title: 'Calendar',
     path: '/Calendar/',
@@ -13,20 +13,8 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'Student',
-    path: `/students/`,
-    icon: <IoIcons.IoIosPaper />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Teacher',
-    path: '/teachers/',
-    icon: <FaIcons.FaCartPlus />,
-    cName: 'nav-text'
-  },
-  {
     title: 'Invoice',
-    path: `/students/`,
+    path: `/view_invoice/`,
     icon: <IoIcons.IoIosPaper />,
     cName: 'nav-text'
   }, 

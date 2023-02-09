@@ -36,28 +36,42 @@ export default function ContextWrapper(props) {
     initEvents
   );
 
-  const filteredEvents = useMemo(() => {
-    // console.log("bye",savedEvents)
-    return savedEvents.filter((evt) =>
-      labels
-        .filter((lbl) => lbl.checked)
-        .map((lbl) => lbl.label)
-        .includes(evt.label)
-    );
-  }, [savedEvents, labels]);
+  const filteredEvents = savedEvents.filter((evt) =>
+  labels
+    .filter((lbl) => lbl.checked)
+    .map((lbl) => lbl.label)
+    .includes(evt.label)
+);
   const getLesson = async () => {
-    const response = await axios({
-      method: "GET",
-      url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/${localStorage.getItem("id")}`,
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-    });
-    if (response) {
-      const receiver = await response.data;
-      localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
+    if(localStorage.getItem("profile") === "MusicSchool"){
+      const response = await axios({
+        method: "GET",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/${localStorage.getItem("id")}`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+      if (response) {
+        const receiver = await response.data;
+        localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
+        console.log("notworking")
+      }
     }
-  };
+    else{
+      const response = await axios({
+        method: "GET",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/user/${localStorage.getItem("id")}`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+      if (response) {
+        const receiver = await response.data;
+        localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
+        console.log("working", receiver)
+      }
+    }
+  }
 
   useEffect(() => {
     getLesson();

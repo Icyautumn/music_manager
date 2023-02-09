@@ -6,6 +6,7 @@ import { SidebarData } from "./SidebarData";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
 import { AccountContext } from "../pages/login Page/Accounts";
+import { userNavbar } from "./userNavbar";
 
 function Navbar() {
   const { getSession, logout } = useContext(AccountContext);
@@ -42,7 +43,6 @@ function Navbar() {
             </p>
           </button>
         </div>
-
         <nav className={sidebar ? "nav-menu active" : "nav-menu"}>
           <ul className="nav-menu-items" onClick={showSidebar}>
             <li className="navbar-toggle">
@@ -50,16 +50,27 @@ function Navbar() {
                 <AiIcons.AiOutlineClose />
               </Link>
             </li>
-            {SidebarData.map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path + token}>
-                    {item.icon}
-                    <span className="sidebarSpan">{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {localStorage.getItem("profile") === "MusicSchool"
+              ? SidebarData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path + token}>
+                        {item.icon}
+                        <span className="sidebarSpan">{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })
+              : userNavbar.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path + token}>
+                        {item.icon}
+                        <span className="sidebarSpan">{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
           </ul>
         </nav>
       </IconContext.Provider>

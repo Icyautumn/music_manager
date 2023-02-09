@@ -12,7 +12,14 @@ export default () => {
         getSession().then(session => {
             console.log("Session", session.nickname);
             localStorage.setItem("id",  session.nickname)
-            navigate(`/calendar/${session.nickname}`)
+            localStorage.setItem("profile",  session.profile)
+            if(session.profile === "MusicSchool"){
+              navigate(`/calendar/${session.nickname}`)
+            }
+            else{
+              navigate(`/calendar/${session.nickname}`)
+            }
+            
             setStatus(true);
         })
     }, [])
