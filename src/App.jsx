@@ -28,6 +28,7 @@ import AddStudent from "./pages/Student/AddStudent";
 import AddTeacher from "./pages/Teacher/AddTeacher";
 import Teacher_Details from "./pages/Teacher/Teacher_Detail";
 import UserInvoice from "./pages/invoice/Read_invoice/UserInvoice";
+import Payment from "./pages/invoice/payment/Payment";
 
 const AppContainer = tw.div`
   w-full
@@ -103,7 +104,7 @@ function App() {
             path="/view_invoice/:token"
             element={[
               <Account>
-                <Navbar />, <UserInvoice/>
+                <Navbar />, <UserInvoice />
               </Account>,
             ]}
           />
@@ -111,7 +112,7 @@ function App() {
             path="/paid_invoice/:token/:invoice_id"
             element={[
               <Account>
-               
+                <Payment />
               </Account>,
             ]}
           />
