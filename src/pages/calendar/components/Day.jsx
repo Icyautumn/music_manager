@@ -20,40 +20,53 @@ export default function Day({ day, rowIdx }) {
   }
 
   const getLesson = async () => {
-    const response = await axios({
-      method: "GET",
-      url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/{music_school_id} ",
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-    });
-    if (response) {
-      const receiver = await response.data;
-      console.log(receiver["Items"]);
-      // localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
-      const events = (receiver["Items"]);
-      console.log("hello", events.filter())
-      setData(
-        events.filter((evt) =>
-          labels
-            .filter((lbl) => lbl.checked)
-            .map((lbl) => lbl.label)
-            .includes(evt.label)
-        )
-      );
+    if(localStorage.getItem("profile") === "MusicSchool"){
+      const response = await axios({
+        method: "GET",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/${localStorage.getItem("id")}`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+      if (response) {
+        const receiver = await response.data;
+        localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
+        const events = receiver["Items"].filter(
+          (event) => dayjs(event.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+        );
+        setDayEvents(events);
+        
+      }
     }
-  };
-
-  // useEffect(() => {
-  //   getLesson();
-  // }, []);
+    else{
+      const response = await axios({
+        method: "GET",
+        url: `https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson/user/${localStorage.getItem("id")}`,
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+      if (response) {
+        const receiver = await response.data;
+        localStorage.setItem("savedEvents", JSON.stringify(receiver["Items"]));
+        const events = receiver["Items"].filter(
+          (event) => dayjs(event.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+        );
+        setDayEvents(events);
+      }
+    }
+  }
 
   useEffect(() => {
-    const events = filteredEvents.filter(
-      (event) => dayjs(event.day).format("DD-MM-YY") === day.format("DD-MM-YY")
-    );
-    setDayEvents(events);
-  }, [filteredEvents, day]);
+    getLesson();
+  }, []);
+
+  // useEffect(() => {
+  //   const events = filteredEvents.filter(
+  //     (event) => dayjs(event.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+  //   );
+  //   setDayEvents(events);
+  // }, [filteredEvents, day]);
 
   return (
     <div className="border border-gray-200 flex flex-col">
