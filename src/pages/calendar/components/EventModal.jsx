@@ -161,6 +161,7 @@ export default function EventModal() {
         const receiver = await response.data;
         console.log("response", receiver);
         dispatchCalEvent({ type: "update", payload: calendarEvent });
+        window.location.reload();
       }
     } else {
       const response = await axios({
@@ -175,6 +176,7 @@ export default function EventModal() {
         const receiver = await response.data;
         console.log("response", receiver);
         dispatchCalEvent({ type: "push", payload: calendarEvent });
+        window.location.reload();
       }
     }
 
@@ -209,6 +211,7 @@ export default function EventModal() {
                         type: "delete",
                         payload: selectedEvent,
                       });
+                      window.location.reload();
                     }
                     setShowEventModal(false);
                   }}

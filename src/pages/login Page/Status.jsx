@@ -32,11 +32,11 @@ export default () => {
 
   return (
     <div>
-        {status ? (<button onClick={() => {logout();}}>
+        {/* {status ? (<button onClick={() => {logout();}}>
             <span className="material-icons-outlined cursor-pointer text-gray-600 mx-2">
               logout
             </span>
-            </button>) : 'Please login below'}
+            </button>) : 'Please login below'} */}
     </div>
   );
 };
