@@ -17,7 +17,7 @@ function Payment() {
         if (response) {
           const receiver = await response.data;
           console.log(receiver)
-          navigate(`/view_invoice/${urlParameters.user_id}`)
+          navigate(`/view_invoice/${urlParameters.token}`)
         }
       };
 
