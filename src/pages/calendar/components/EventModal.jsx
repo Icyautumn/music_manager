@@ -39,9 +39,9 @@ export default function EventModal() {
   const { setShowEventModal, daySelected, dispatchCalEvent, selectedEvent } =
     useContext(GlobalContext);
   const format = "hh:mm A";
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
-  const [duration, setDuration] = useState();
+  const [startTime, setStartTime] = useState(selectedEvent ? selectedEvent.startTime : "");
+  const [endTime, setEndTime] = useState(selectedEvent ? selectedEvent.endTime : "");
+  const [duration, setDuration] = useState(selectedEvent ? selectedEvent.duration : "");
   const [teachers, SetTeachers] = useState();
   const [students, setStudents] = useState();
 
@@ -283,7 +283,7 @@ export default function EventModal() {
                 <Grid xs={6}>
                 {selectedEvent !== null ? (
                     <Autocomplete
-                    value={selectedEvent.teacher}
+                    defaultValue={selectedEvent.teacher}
                     id="Teacher"
                     options={teachers.map((option) => ({
                       name: option.name,
@@ -330,7 +330,7 @@ export default function EventModal() {
                 <Grid xs={6}>
                   {selectedEvent !== null ? (
                     <Autocomplete
-                      value={selectedEvent.student}
+                    defaultValue={selectedEvent.student}
                       id="student"
                       options={students.map((option) => ({
                         name: option.name,
