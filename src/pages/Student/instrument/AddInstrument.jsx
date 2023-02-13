@@ -83,6 +83,48 @@ function AddInstrument() {
     { title: "Sunday" },
   ];
 
+  const addLesson = async () => {
+    const calendarEvent = {
+      id: Date.now(),
+      day: startDate,
+      description: "DESC",
+      label: "gray",
+      startTime: startTime,
+      endTime: endTime,
+      teacher_id: teacherTeaching.id,
+      teacher: teacherTeaching.name,
+      student_id: urlParameters.student_id,
+      student: localStorage.getItem("student"),
+      title: instrumentPicked + " lesson",
+      duration: duration,
+      grade: gradePicked,     
+      music_school_id: urlParameters.token,
+      
+    };
+
+    const response = await axios({
+      method: "POST",
+      url: "https://8nnc5jq04m.execute-api.us-east-1.amazonaws.com/music_portal/lesson",
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+      data: { calendarEvent },
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    });
+    if (response) {
+      const receiver = await response.data;
+      console.log(receiver);
+      navigate(`/Students/${urlParameters.token}/${urlParameters.student_id}`)
+    }
+
+
+  }
+
   const addInstrument = async () => {
     const data = {
       instrument_name: instrumentPicked,
@@ -118,7 +160,7 @@ function AddInstrument() {
     if (response) {
       const receiver = await response.data;
       console.log(receiver);
-      navigate(`/Students/${urlParameters.token}/${urlParameters.student_id}`)
+      addLesson();
     }
   };
   const getTeachers = async () => {

@@ -243,6 +243,7 @@ export function Instruments({ value }) {
         Cell: ({ row }) => (
           <Button
             onClick={() => {
+              localStorage.setItem("student", value)              
               navigate(
                 `/students/edit_instrument/${urlParameters.token}/${urlParameters.student_id}/${row.original.instrument_id}`
               );
@@ -303,6 +304,7 @@ export function Instruments({ value }) {
                 variant="contained"
                 endIcon={<AddIcon />}
                 onClick={() => {
+                  localStorage.setItem("student", value[0].name)
                   navigate(`/students/add_Instrument/${urlParameters.token}/${urlParameters.student_id}`)
                 }}
               >
